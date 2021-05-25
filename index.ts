@@ -11,7 +11,7 @@ import routes from "./src/routes/index";
 /* Middleware */
 import headers from "./src/middleware/headers";
 
-mongoose.connect("mongodb://localhost:27017/eventApp", {
+mongoose.connect("", {
   useNewUrlParser: true,
 });
 
