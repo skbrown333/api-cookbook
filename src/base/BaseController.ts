@@ -52,6 +52,10 @@ export default class BaseController {
       let modelId = req.params.id;
       let model = await this.model.findById(modelId);
 
+      if (!model) {
+        res.stauts(404).send();
+      }
+
       if (this.populateFields) {
         model = await model.populate(this.populateFields).execPopulate();
       }
@@ -72,9 +76,13 @@ export default class BaseController {
       }
 
       let modelId = req.params.id;
-      let model = await this.model.findOneAndUpdate({ _id: modelId }, body, {
-        new: true,
-      });
+      let model = await this.model.findById(modelId);
+
+      if (!model) {
+        res.stauts(404).send();
+      }
+
+      model = await this.model.updateOne(body);
 
       if (this.populateFields) {
         model = await model.populate(this.populateFields).execPopulate();
@@ -95,7 +103,13 @@ export default class BaseController {
       }
 
       let modelId = req.params.id;
-      let model = await this.model.findByIdAndDelete(modelId);
+      let model = await this.model.findBy(modelId);
+
+      if (!model) {
+        res.stauts(404).send();
+      }
+
+      model = await this.model.deleteOne();
 
       if (this.populateFields) {
         model = await model.populate(this.populateFields).execPopulate();
