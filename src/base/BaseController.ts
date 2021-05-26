@@ -37,7 +37,9 @@ export default class BaseController {
   async get(req, res, next) {
     const { cookbook } = req.params;
     let params = {
-      ...(cookbook ? { cookbook: cookbook } : {}),
+      ...(cookbook && this.routeSingular !== "cookbook"
+        ? { cookbook: cookbook }
+        : {}),
     };
     try {
       let models;
