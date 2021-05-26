@@ -25,7 +25,7 @@ export default class BaseController {
     try {
       let models = await this.model
         .find({})
-        .populate(this.model.populateFields)
+        .populate(this.populateFields)
         .exec();
       return res.status(200).send(models);
     } catch (err) {
