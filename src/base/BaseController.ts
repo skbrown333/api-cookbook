@@ -59,6 +59,7 @@ export default class BaseController {
 
   async getById(req, res, next) {
     try {
+      console.log(req.params);
       if (!req.params || !req.params[this.routeSingular]) {
         return res.status(400).send();
       }
