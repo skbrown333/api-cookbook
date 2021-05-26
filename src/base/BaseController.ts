@@ -19,10 +19,12 @@ export default class BaseController {
   async create(req, res, next) {
     let body = req.body;
     const { cookbook } = req.params;
+    console.log(req.params);
     let params = {
       ...{ body },
       ...(cookbook ? { cookbook: cookbook } : {}),
     };
+    console.log(params);
     try {
       let model = await this.model.create(params);
       if (this.populateFields) {
