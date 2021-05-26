@@ -107,7 +107,7 @@ export default class BaseController {
 
       await this.model.deleteOne();
 
-      return res.status(200);
+      return res.status(200).send();
     } catch (err) {
       throw err;
     }
