@@ -24,7 +24,7 @@ mongoose.connection.on("error", (err) => {
   log.error("Mongoose Default Connection Error : " + err);
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   log.info("Server running on port 3000");
 });
 
