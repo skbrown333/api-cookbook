@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get("", wrapAsync(GuideController.get));
 router.get("/:id", wrapAsync(GuideController.getById));
+router.patch("/:id", wrapAsync(GuideController.update));
+router.delete("/:id", wrapAsync(GuideController.delete));
 router.post("", wrapAsync(GuideController.create));
 
 logRoutes("/guides", router);

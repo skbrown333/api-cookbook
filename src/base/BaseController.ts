@@ -10,6 +10,8 @@ export default class BaseController {
     this.create = this.create.bind(this);
     this.get = this.get.bind(this);
     this.getById = this.getById.bind(this);
+    this.update = this.update.bind(this);
+    this.delete = this.delete.bind(this);
   }
 
   async create(req, res, next) {
@@ -55,6 +57,51 @@ export default class BaseController {
       }
 
       return res.status(200).send(model);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async update(req, res, next) {
+    let body = req.body;
+    try {
+      if (!req.params || !req.params.id) {
+        let error: any = new Error("Id Required");
+        error.status = 400;
+        throw error;
+      }
+
+      let modelId = req.params.id;
+      let model = await this.model.findOneAndUpdate({ _id: modelId }, body, {
+        new: true,
+      });
+
+      if (this.populateFields) {
+        model = await model.populate(this.populateFields).execPopulate();
+      }
+
+      return res.status(200).json({ model });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async delete(req, res, next) {
+    try {
+      if (!req.params || !req.params.id) {
+        let error: any = new Error("Id Required");
+        error.status = 400;
+        throw error;
+      }
+
+      let modelId = req.params.id;
+      let model = await this.model.findByIdAndDelete(modelId);
+
+      if (this.populateFields) {
+        model = await model.populate(this.populateFields).execPopulate();
+      }
+
+      return res.status(200).json({ model });
     } catch (err) {
       throw err;
     }

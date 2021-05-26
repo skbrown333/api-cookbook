@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get("", wrapAsync(TagController.get));
 router.get("/:id", wrapAsync(TagController.getById));
+router.patch("/:id", wrapAsync(TagController.update));
+router.delete("/:id", wrapAsync(TagController.delete));
 router.post("", wrapAsync(TagController.create));
 
 logRoutes("/tags", router);

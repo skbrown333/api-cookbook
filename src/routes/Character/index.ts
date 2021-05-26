@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get("", wrapAsync(CharacterController.get));
 router.get("/:id", wrapAsync(CharacterController.getById));
+router.patch("/:id", wrapAsync(CharacterController.update));
+router.delete("/:id", wrapAsync(CharacterController.delete));
 router.post("", wrapAsync(CharacterController.create));
 
 logRoutes("/characters", router);
