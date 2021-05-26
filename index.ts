@@ -10,10 +10,9 @@ import routes from "./src/routes/index";
 
 /* Middleware */
 import headers from "./src/middleware/headers";
+import { ENV } from "./src/constants/constants";
 
-mongoose.connect("", {
-  useNewUrlParser: true,
-});
+mongoose.connect(ENV.db_url);
 
 // When successfully connected
 mongoose.connection.on("connected", () => {
