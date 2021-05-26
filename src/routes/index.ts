@@ -6,7 +6,7 @@ import { default as CharacterRouter } from "./Character";
 import { default as GameRouter } from "./Game";
 import { default as GuideRouter } from "./Cookbook/Guide";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use("/cookbooks", CookbookRouter);
 router.use("/characters", CharacterRouter);
