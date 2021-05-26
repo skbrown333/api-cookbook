@@ -11,18 +11,6 @@ class GuideController extends BaseController {
     options.routeSingular = "guide";
     super(options);
   }
-
-  async create(req, res, next) {
-    const body = req.body;
-    const { cookbook } = req.params;
-    const options = {
-      ...{ cookbook },
-      ...{ body },
-    };
-    console.log("GuideController----------------------\n", req.params);
-
-    super.create(req, res, next, options);
-  }
 }
 
 export default new GuideController();

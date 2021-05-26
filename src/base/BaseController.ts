@@ -16,11 +16,15 @@ export default class BaseController {
     this.delete = this.delete.bind(this);
   }
 
-  async create(req, res, next, options) {
-    let body = options || req.body;
-    console.log("BaseController--------------\n", options);
+  async create(req, res, next) {
+    let body = req.body;
+    const { cookbook } = req.params;
+    let params = {
+      ...{ body },
+      ...(cookbook ? { cookbook: cookbook } : {}),
+    };
     try {
-      let model = await this.model.create(body);
+      let model = await this.model.create(params);
       if (this.populateFields) {
         model = await model.populate(this.populateFields).execPopulate();
       }
