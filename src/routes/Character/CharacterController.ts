@@ -4,7 +4,11 @@ import { CharacterModel } from "../../models/Character/character.model";
 class CharacterController extends BaseController {
   constructor() {
     let model = CharacterModel;
-    super({ model });
+    let options: any = {
+      model,
+    };
+    options.populateFields = "game";
+    super(options);
   }
 }
 

@@ -4,7 +4,11 @@ import { CookbookModel } from "../../models/Cookbook/cookbook.model";
 class CookbookController extends BaseController {
   constructor() {
     let model = CookbookModel;
-    super({ model });
+    let options: any = {
+      model,
+    };
+    options.populateFields = "game character";
+    super(options);
   }
 }
 

@@ -1,10 +1,12 @@
 export default class BaseController {
   model: any;
+  populateFields: any;
 
   constructor(options) {
     if (!options || !options.model) throw new Error("Must Pass Options");
-    this.model = options.model;
 
+    this.model = options.model;
+    this.populateFields = options.populateFields;
     this.create = this.create.bind(this);
     this.get = this.get.bind(this);
   }
@@ -22,6 +24,9 @@ export default class BaseController {
   async get(req, res, next) {
     try {
       let models = await this.model.find({});
+      if (this.populateFields.populateFields) {
+        models = await models.populate(this.model.populateFields);
+      }
       return res.status(200).send(models);
     } catch (err) {
       throw err;

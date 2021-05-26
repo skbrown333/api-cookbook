@@ -13,8 +13,12 @@ let CookbookSchema = new Schema(
     },
     subdomain: { type: String, required: true },
     name: { type: String, required: true },
-    character: { type: Schema.Types.ObjectId, required: true },
-    game: { type: Schema.Types.ObjectId, required: true },
+    character: {
+      type: Schema.Types.ObjectId,
+      ref: "character",
+      required: true,
+    },
+    game: { type: Schema.Types.ObjectId, ref: "game", required: true },
     streams: { type: Array, required: true, default: [] },
   },
   schemaOptions
