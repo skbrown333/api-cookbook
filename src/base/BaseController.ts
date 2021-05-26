@@ -21,7 +21,7 @@ export default class BaseController {
       if (this.populateFields) {
         model = await model.populate(this.populateFields).execPopulate();
       }
-      return res.status(200).json({ model });
+      return res.status(200).json(model);
     } catch (err) {
       throw err;
     }
@@ -80,7 +80,7 @@ export default class BaseController {
         model = await model.populate(this.populateFields).execPopulate();
       }
 
-      return res.status(200).json({ model });
+      return res.status(200).json(model);
     } catch (err) {
       throw err;
     }
@@ -101,7 +101,7 @@ export default class BaseController {
         model = await model.populate(this.populateFields).execPopulate();
       }
 
-      return res.status(200).json({ model });
+      return res.status(200).json(model);
     } catch (err) {
       throw err;
     }
