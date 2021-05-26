@@ -1,5 +1,5 @@
-import BaseController from "../../base/BaseController";
-import { TagModel } from "../../models/Tag/tag.model";
+import BaseController from "../../../base/BaseController";
+import { TagModel } from "../../../models/Tag/tag.model";
 
 class TagController extends BaseController {
   constructor() {
@@ -7,6 +7,8 @@ class TagController extends BaseController {
     let options: any = {
       model,
     };
+    options.populateFields = "cookbook";
+    options.routeSingular = "tag";
     super(options);
   }
 }

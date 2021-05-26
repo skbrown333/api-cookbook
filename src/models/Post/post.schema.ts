@@ -10,6 +10,11 @@ let PostSchema = new Schema(
     cre_account: { type: Schema.Types.ObjectId, required: false },
     title: { type: String, required: true },
     body: { type: String, required: false },
+    cookbook: {
+      type: Schema.Types.ObjectId,
+      ref: "cookbook",
+      required: false,
+    },
     character: {
       type: Schema.Types.ObjectId,
       ref: "character",

@@ -1,12 +1,14 @@
 export default class BaseController {
   model: any;
   populateFields: any;
+  routeSingular: any;
 
   constructor(options) {
     if (!options || !options.model) throw new Error("Must Pass Options");
 
     this.model = options.model;
     this.populateFields = options.populateFields;
+    this.routeSingular = options.routeSingular;
     this.create = this.create.bind(this);
     this.get = this.get.bind(this);
     this.getById = this.getById.bind(this);
@@ -14,8 +16,8 @@ export default class BaseController {
     this.delete = this.delete.bind(this);
   }
 
-  async create(req, res, next) {
-    let body = req.body;
+  async create(req, res, next, options) {
+    let body = options || req.body;
     try {
       let model = await this.model.create(body);
       if (this.populateFields) {

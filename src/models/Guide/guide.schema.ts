@@ -10,6 +10,11 @@ let GuideSchema = new Schema(
     cre_account: { type: Schema.Types.ObjectId, required: false },
     title: { type: String, required: true },
     description: { type: String, required: false },
+    cookbook: {
+      type: Schema.Types.ObjectId,
+      ref: "cookbook",
+      required: true,
+    },
     character: {
       type: Schema.Types.ObjectId,
       ref: "character",

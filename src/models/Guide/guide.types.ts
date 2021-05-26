@@ -5,6 +5,7 @@ export interface IGuide {
   cre_account?: Schema.Types.ObjectId;
   title: string;
   description?: string;
+  cookbook: Schema.Types.ObjectId;
   character?: Schema.Types.ObjectId;
   sections: Schema.Types.ObjectId[];
   tags: Schema.Types.ObjectId[];

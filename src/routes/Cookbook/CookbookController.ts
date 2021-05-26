@@ -8,6 +8,7 @@ class CookbookController extends BaseController {
       model,
     };
     options.populateFields = "game character";
+    options.routeSingular = "cookbook";
     super(options);
   }
 }

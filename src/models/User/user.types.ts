@@ -1,4 +1,4 @@
-import { Document, Model } from "mongoose";
+import { Document, Model, Schema } from "mongoose";
 
 export interface IUser {
   email: string;
@@ -7,6 +7,7 @@ export interface IUser {
   username: string;
   discriminator: string;
   avatar: string;
+  cookbook: Schema.Types.ObjectId;
 }
 
 export interface IUserDocument extends IUser, Document {}
