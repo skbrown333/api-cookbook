@@ -59,12 +59,11 @@ export default class BaseController {
 
   async getById(req, res, next) {
     try {
-      console.log(req.params);
       if (!req.params || !req.params[this.routeSingular]) {
         return res.status(400).send();
       }
 
-      let modelId = req.params.id;
+      let modelId = req.params[this.routeSingular];
       let model = await this.model.findById(modelId);
 
       if (!model) {
@@ -84,11 +83,11 @@ export default class BaseController {
   async update(req, res, next) {
     let body = req.body;
     try {
-      if (!req.params || !req.params.id) {
+      if (!req.params || !req.params[this.routeSingular]) {
         return res.status(400).send();
       }
 
-      let modelId = req.params.id;
+      let modelId = req.params[this.routeSingular];
       let model = await this.model.findById(modelId);
 
       if (!model) {
@@ -111,11 +110,11 @@ export default class BaseController {
 
   async delete(req, res, next) {
     try {
-      if (!req.params || !req.params.id) {
+      if (!req.params || !req.params[this.routeSingular]) {
         return res.status(400).send();
       }
 
-      let modelId = req.params.id;
+      let modelId = req.params[this.routeSingular];
       let model = await this.model.findById(modelId);
 
       if (!model) {
