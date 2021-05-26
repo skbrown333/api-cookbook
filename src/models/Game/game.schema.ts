@@ -7,6 +7,7 @@ let schemaOptions = {
 let GameSchema = new Schema(
   {
     name: { type: String, required: true },
+    display_name: { type: String, required: true },
   },
   schemaOptions
 );

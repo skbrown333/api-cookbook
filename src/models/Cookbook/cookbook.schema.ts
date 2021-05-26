@@ -7,9 +7,9 @@ let schemaOptions = {
 let CookbookSchema = new Schema(
   {
     cre_date: {
-      type: String,
+      type: Date,
       required: true,
-      default: new Date().toDateString(),
+      default: new Date(),
     },
     subdomain: { type: String, required: true },
     name: { type: String, required: true },
@@ -19,7 +19,7 @@ let CookbookSchema = new Schema(
       required: true,
     },
     game: { type: Schema.Types.ObjectId, ref: "game", required: true },
-    streams: { type: Array, required: true, default: [] },
+    streams: [{ type: String, required: true, default: [] }],
   },
   schemaOptions
 );

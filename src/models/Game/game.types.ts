@@ -2,6 +2,7 @@ import { Document, Model } from "mongoose";
 
 export interface IGame {
   name: string;
+  display_name: string;
 }
 
 export interface IGameDocument extends IGame, Document {}
