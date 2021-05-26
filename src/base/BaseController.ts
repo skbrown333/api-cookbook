@@ -105,13 +105,9 @@ export default class BaseController {
         return res.status(404).send();
       }
 
-      model = await this.model.deleteOne();
+      await this.model.deleteOne();
 
-      if (this.populateFields) {
-        model = await model.populate(this.populateFields).execPopulate();
-      }
-
-      return res.status(200).json(model);
+      return res.status(200);
     } catch (err) {
       throw err;
     }
