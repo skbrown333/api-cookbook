@@ -44,16 +44,14 @@ export default class BaseController {
   async getById(req, res, next) {
     try {
       if (!req.params || !req.params.id) {
-        let error: any = new Error("Id Required");
-        error.status = 400;
-        throw error;
+        return res.status(400).send();
       }
 
       let modelId = req.params.id;
       let model = await this.model.findById(modelId);
 
       if (!model) {
-        res.status(404).send();
+        return res.status(404).send();
       }
 
       if (this.populateFields) {
@@ -70,19 +68,19 @@ export default class BaseController {
     let body = req.body;
     try {
       if (!req.params || !req.params.id) {
-        let error: any = new Error("Id Required");
-        error.status = 400;
-        throw error;
+        return res.status(400).send();
       }
 
       let modelId = req.params.id;
       let model = await this.model.findById(modelId);
 
       if (!model) {
-        res.status(404).send();
+        return res.status(404).send();
       }
 
-      model = await this.model.updateOne(body);
+      model = await this.model.findOneAndUpdate({ _id: modelId }, body, {
+        new: true,
+      });
 
       if (this.populateFields) {
         model = await model.populate(this.populateFields).execPopulate();
@@ -97,16 +95,14 @@ export default class BaseController {
   async delete(req, res, next) {
     try {
       if (!req.params || !req.params.id) {
-        let error: any = new Error("Id Required");
-        error.status = 400;
-        throw error;
+        return res.status(400).send();
       }
 
       let modelId = req.params.id;
-      let model = await this.model.findBy(modelId);
+      let model = await this.model.findById(modelId);
 
       if (!model) {
-        res.status(404).send();
+        return res.status(404).send();
       }
 
       model = await this.model.deleteOne();
