@@ -11,7 +11,7 @@ let CookbookSchema = new Schema(
     name: { type: String, required: true },
     character: { type: Schema.Types.ObjectId, required: true },
     game: { type: Schema.Types.ObjectId, required: true },
-    streams: { type: Array, required: true },
+    streams: { type: Array, required: true, default: [] },
   },
   schemaOptions
 );
