@@ -30,7 +30,7 @@ export default class BaseController {
       }
       return res.status(200).json(model);
     } catch (err) {
-      throw err;
+      return next(err);
     }
   }
 
@@ -53,21 +53,25 @@ export default class BaseController {
       }
       return res.status(200).send(models);
     } catch (err) {
-      throw err;
+      return next(err);
     }
   }
 
   async getById(req, res, next) {
     try {
       if (!req.params || !req.params[this.routeSingular]) {
-        return res.status(400).send();
+        return res
+          .status(500)
+          .json({ message: "Missing required params", status: 500 });
       }
 
       let modelId = req.params[this.routeSingular];
       let model = await this.model.findById(modelId);
 
       if (!model) {
-        return res.status(404).send();
+        return res
+          .status(500)
+          .json({ message: "Model not found", status: 500 });
       }
 
       if (this.populateFields) {
@@ -76,7 +80,7 @@ export default class BaseController {
 
       return res.status(200).send(model);
     } catch (err) {
-      throw err;
+      return next(err);
     }
   }
 
@@ -84,14 +88,18 @@ export default class BaseController {
     let body = req.body;
     try {
       if (!req.params || !req.params[this.routeSingular]) {
-        return res.status(400).send();
+        return res
+          .status(500)
+          .json({ message: "Missing required params", status: 500 });
       }
 
       let modelId = req.params[this.routeSingular];
       let model = await this.model.findById(modelId);
 
       if (!model) {
-        return res.status(404).send();
+        return res
+          .status(500)
+          .json({ message: "Model not found", status: 500 });
       }
 
       model = await this.model.findOneAndUpdate({ _id: modelId }, body, {
@@ -104,28 +112,32 @@ export default class BaseController {
 
       return res.status(200).json(model);
     } catch (err) {
-      throw err;
+      return next(err);
     }
   }
 
   async delete(req, res, next) {
     try {
       if (!req.params || !req.params[this.routeSingular]) {
-        return res.status(400).send();
+        return res
+          .status(500)
+          .json({ message: "Missing required params", status: 500 });
       }
 
       let modelId = req.params[this.routeSingular];
       let model = await this.model.findById(modelId);
 
       if (!model) {
-        return res.status(404).send();
+        return res
+          .status(500)
+          .json({ message: "Model not found", status: 500 });
       }
 
       await this.model.deleteOne();
 
       return res.status(200).send();
     } catch (err) {
-      throw err;
+      return next(err);
     }
   }
 }
