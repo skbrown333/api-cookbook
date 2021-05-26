@@ -16,7 +16,7 @@ export default class BaseController {
     try {
       let model = await this.model.create(body);
       if (this.populateFields) {
-        model = await model.populate(this.populateFields);
+        model = await model.populate(this.populateFields).execPopulate();
       }
       return res.status(200).json({ model });
     } catch (err) {

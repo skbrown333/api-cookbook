@@ -11,7 +11,7 @@ let CookbookSchema = new Schema(
       required: true,
       default: new Date(),
     },
-    subdomain: { type: String, required: true },
+    subdomain: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     character: {
       type: Schema.Types.ObjectId,
