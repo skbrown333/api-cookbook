@@ -16,8 +16,8 @@ class GuideController extends BaseController {
     const body = req.body;
     const { cookbook } = req.params;
     const options = {
-      cookbook,
-      body,
+      ...{ cookbook },
+      ...{ body },
     };
     console.log("GuideController----------------------");
 
