@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import morgan from "morgan";
+import helmet from "helmet";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.listen(process.env.PORT || 3000, () => {
   log.info(ENV.db_url);
 });
 
+app.use(helmet());
 app.use(headers);
 
 let morganLogStyle =
