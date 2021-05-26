@@ -6,7 +6,11 @@ let schemaOptions = {
 
 let CookbookSchema = new Schema(
   {
-    cre_date: { type: String, required: true },
+    cre_date: {
+      type: String,
+      required: true,
+      default: new Date().toDateString(),
+    },
     subdomain: { type: String, required: true },
     name: { type: String, required: true },
     character: { type: Schema.Types.ObjectId, required: true },
