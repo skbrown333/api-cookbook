@@ -4,7 +4,7 @@ import GuideController from "./GuideController";
 import { wrapAsync } from "../../../utils/utils";
 import { logRoutes } from "../../../utils/logging";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.get("", wrapAsync(GuideController.get));
 router.get("/:guide", wrapAsync(GuideController.getById));
