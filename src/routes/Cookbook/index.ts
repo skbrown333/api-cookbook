@@ -8,7 +8,7 @@ import { default as PostRouter } from "./Post";
 import { default as TagRouter } from "./Tag";
 import { default as UserRouter } from "./User";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.get("", wrapAsync(CookbookController.get));
 router.post("", wrapAsync(CookbookController.create));
