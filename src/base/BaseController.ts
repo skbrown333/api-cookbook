@@ -9,6 +9,7 @@ export default class BaseController {
     this.populateFields = options.populateFields;
     this.create = this.create.bind(this);
     this.get = this.get.bind(this);
+    this.getById = this.getById.bind(this);
   }
 
   async create(req, res, next) {
