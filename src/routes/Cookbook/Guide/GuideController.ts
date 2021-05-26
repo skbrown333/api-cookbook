@@ -19,6 +19,7 @@ class GuideController extends BaseController {
       cookbook,
       body,
     };
+    console.log("GuideController----------------------");
 
     super.create(req, res, next, options);
   }

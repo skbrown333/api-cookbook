@@ -18,6 +18,7 @@ export default class BaseController {
 
   async create(req, res, next, options) {
     let body = options || req.body;
+    console.log("BaseController--------------\n", options);
     try {
       let model = await this.model.create(body);
       if (this.populateFields) {
