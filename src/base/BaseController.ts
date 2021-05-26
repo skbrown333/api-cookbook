@@ -14,10 +14,8 @@ export default class BaseController {
   async create(req, res, next) {
     let body = req.body;
     try {
-      let model = await this.model
-        .create(body)
-        .populate(this.populateFields)
-        .exec();
+      let model = await this.model.create(body);
+      model = await model.populate(this.populateFields).exec();
       return res.status(200).json({ model });
     } catch (err) {
       throw err;
