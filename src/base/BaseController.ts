@@ -35,10 +35,17 @@ export default class BaseController {
   }
 
   async get(req, res, next) {
+    const { cookbook } = req.params;
+    let params = {
+      ...(cookbook ? { cookbook: cookbook } : {}),
+    };
     try {
       let models;
       if (this.populateFields) {
-        models = await this.model.find({}).populate(this.populateFields).exec();
+        models = await this.model
+          .find(params)
+          .populate(this.populateFields)
+          .exec();
       } else {
         models = await this.model.find({});
       }
