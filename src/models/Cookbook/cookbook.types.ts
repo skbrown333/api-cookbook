@@ -7,6 +7,7 @@ export interface ICookbook {
   character: Schema.Types.ObjectId;
   game: Schema.Types.ObjectId;
   streams: string[];
+  roles: any;
 }
 
 export interface ICookbookDocument extends ICookbook, Document {}

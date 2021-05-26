@@ -1,16 +1,16 @@
 import express from "express";
 import { handleError } from "../../utils/utils";
-import CookbookController from "./CookbookController";
+import TagController from "./TagController";
 import { wrapAsync } from "../../utils/utils";
 import { logRoutes } from "../../utils/logging";
 
 const router = express.Router();
 
-router.get("", wrapAsync(CookbookController.get));
-router.get("/:id", wrapAsync(CookbookController.getById));
-router.post("", wrapAsync(CookbookController.create));
+router.get("", wrapAsync(TagController.get));
+router.get("/:id", wrapAsync(TagController.getById));
+router.post("", wrapAsync(TagController.create));
 
-logRoutes("/cookbooks", router);
+logRoutes("/tags", router);
 router.use(handleError);
 
 export default router;

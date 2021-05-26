@@ -20,6 +20,7 @@ let CookbookSchema = new Schema(
     },
     game: { type: Schema.Types.ObjectId, ref: "game", required: true },
     streams: [{ type: String, required: true, default: [] }],
+    roles: { type: Object, required: true, default: {} },
   },
   schemaOptions
 );

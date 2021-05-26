@@ -7,6 +7,7 @@ import { logRoutes } from "../../utils/logging";
 const router = express.Router();
 
 router.get("", wrapAsync(GameController.get));
+router.get("/:id", wrapAsync(GameController.getById));
 router.post("", wrapAsync(GameController.create));
 
 logRoutes("/games", router);

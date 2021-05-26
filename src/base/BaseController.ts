@@ -37,6 +37,27 @@ export default class BaseController {
       throw err;
     }
   }
+
+  async getById(req, res, next) {
+    try {
+      if (!req.params || !req.params.id) {
+        let error: any = new Error("Id Required");
+        error.status = 400;
+        throw error;
+      }
+
+      let modelId = req.params.id;
+      let model = await this.model.findById(modelId);
+
+      if (this.populateFields) {
+        model = await model.populate(this.populateFields).execPopulate();
+      }
+
+      return res.status(200).send(model);
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 module.exports = BaseController;
