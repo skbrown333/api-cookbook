@@ -24,7 +24,7 @@ export default class BaseController {
   async get(req, res, next) {
     try {
       let models = await this.model.find({});
-      if (this.populateFields.populateFields) {
+      if (this.populateFields) {
         models = await models.populate(this.model.populateFields);
       }
       return res.status(200).send(models);
