@@ -4,7 +4,6 @@ import { handleError } from "../utils/utils";
 import { default as CookbookRouter } from "./Cookbook";
 import { default as CharacterRouter } from "./Character";
 import { default as GameRouter } from "./Game";
-import { default as GuideRouter } from "./Cookbook/Guide";
 
 const router = express.Router();
 

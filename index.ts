@@ -27,7 +27,6 @@ mongoose.connection.on("error", (err) => {
 
 app.listen(process.env.PORT || 3000, () => {
   log.info("Server running on port 3000");
-  log.info(ENV.db_url);
 });
 
 app.use(helmet());

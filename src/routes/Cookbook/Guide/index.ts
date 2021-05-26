@@ -1,5 +1,5 @@
 import express from "express";
-import { handleError } from "../../../utils/utils";
+import { auth, handleError } from "../../../utils/utils";
 import GuideController from "./GuideController";
 import { wrapAsync } from "../../../utils/utils";
 import { logRoutes } from "../../../utils/logging";
@@ -8,9 +8,9 @@ const router = express.Router({ mergeParams: true });
 
 router.get("", wrapAsync(GuideController.get));
 router.get("/:guide", wrapAsync(GuideController.getById));
-router.patch("/:guide", wrapAsync(GuideController.update));
-router.delete("/:guide", wrapAsync(GuideController.delete));
-router.post("", wrapAsync(GuideController.create));
+router.patch("/:guide", auth, wrapAsync(GuideController.update));
+router.delete("/:guide", auth, wrapAsync(GuideController.delete));
+router.post("", auth, wrapAsync(GuideController.create));
 
 logRoutes("/cookbooks/:cookbook/guides", router);
 router.use(handleError);
