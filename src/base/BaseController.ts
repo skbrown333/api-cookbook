@@ -53,7 +53,7 @@ export default class BaseController {
       let model = await this.model.findById(modelId);
 
       if (!model) {
-        res.stauts(404).send();
+        res.status(404).send();
       }
 
       if (this.populateFields) {
@@ -79,7 +79,7 @@ export default class BaseController {
       let model = await this.model.findById(modelId);
 
       if (!model) {
-        res.stauts(404).send();
+        res.status(404).send();
       }
 
       model = await this.model.updateOne(body);
@@ -106,7 +106,7 @@ export default class BaseController {
       let model = await this.model.findBy(modelId);
 
       if (!model) {
-        res.stauts(404).send();
+        res.status(404).send();
       }
 
       model = await this.model.deleteOne();
