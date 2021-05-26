@@ -15,7 +15,9 @@ export default class BaseController {
     let body = req.body;
     try {
       let model = await this.model.create(body);
-      model = await model.populate(this.populateFields).exec();
+      if (this.populateFields) {
+        model = await model.populate(this.populateFields).exec();
+      }
       return res.status(200).json({ model });
     } catch (err) {
       throw err;
@@ -24,10 +26,12 @@ export default class BaseController {
 
   async get(req, res, next) {
     try {
-      let models = await this.model
-        .find({})
-        .populate(this.populateFields)
-        .exec();
+      let models;
+      if (this.populateFields) {
+        models = await this.model.find({}).populate(this.populateFields).exec();
+      } else {
+        models = await this.model.find({});
+      }
       return res.status(200).send(models);
     } catch (err) {
       throw err;
