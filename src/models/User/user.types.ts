@@ -8,6 +8,7 @@ export interface IUser {
   discriminator: string;
   avatar: string;
   cookbook: Schema.Types.ObjectId;
+  super_admin: boolean;
 }
 
 export interface IUserDocument extends IUser, Document {}

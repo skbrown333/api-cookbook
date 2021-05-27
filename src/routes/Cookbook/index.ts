@@ -6,7 +6,6 @@ import { logRoutes } from "../../utils/logging";
 import { default as GuideRouter } from "./Guide";
 import { default as PostRouter } from "./Post";
 import { default as TagRouter } from "./Tag";
-import { default as UserRouter } from "./User";
 
 const router = express.Router();
 
@@ -21,7 +20,6 @@ logRoutes("/cookbooks", router);
 router.use("/:cookbook/guides", GuideRouter);
 router.use("/:cookbook/posts", PostRouter);
 router.use("/:cookbook/tags", TagRouter);
-router.use("/:cookbook/users", UserRouter);
 
 router.use(handleError);
 

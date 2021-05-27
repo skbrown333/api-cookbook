@@ -4,7 +4,7 @@ let schemaOptions = {
   versionKey: false,
 };
 
-let TagSchema = new Schema(
+let UserSchema = new Schema(
   {
     email: { type: String, required: true },
     uid: { type: String, required: true },
@@ -17,8 +17,9 @@ let TagSchema = new Schema(
       ref: "cookbook",
       required: false,
     },
+    super_admin: { type: Boolean, required: true, default: false },
   },
   schemaOptions
 );
 
-export default TagSchema;
+export default UserSchema;

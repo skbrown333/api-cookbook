@@ -22,6 +22,7 @@
   "homepage": "https://github.com/skbrown333/api-cookbook#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "firebase-admin": "^9.9.0",
     "helmet": "^4.6.0",
     "mongoose": "^5.12.11",
     "morgan": "^1.10.0",
