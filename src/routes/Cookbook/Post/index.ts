@@ -4,7 +4,7 @@ import PostController from "./PostController";
 import { wrapAsync } from "../../../utils/utils";
 import { logRoutes } from "../../../utils/logging";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.get("", wrapAsync(PostController.get));
 router.get("/:post", wrapAsync(PostController.getById));

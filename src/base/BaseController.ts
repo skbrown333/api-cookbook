@@ -40,6 +40,7 @@ export default class BaseController {
       ...(cookbook && this.routeSingular !== "cookbook"
         ? { cookbook: cookbook }
         : {}),
+      ...req.query,
     };
     try {
       let models;

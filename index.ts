@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import helmet from "helmet";
+import cors from "cors";
 
 const app = express();
 
@@ -30,7 +31,8 @@ app.listen(process.env.PORT || 3000, () => {
 });
 
 app.use(helmet());
-app.use(headers);
+//app.use(headers);
+app.use(cors());
 
 let morganLogStyle =
   ":method :url :status :response-time ms - :res[content-length]";

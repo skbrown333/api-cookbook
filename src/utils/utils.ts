@@ -39,14 +39,18 @@ const getAuthToken = (req, res, next) => {
 
 export const auth = (req, res, next) => {
   getAuthToken(req, res, async () => {
+    console.log(req.authToken);
+    console.log("params: ", req.params);
     try {
       const { authToken } = req;
       const userInfo = await admin.auth().verifyIdToken(authToken);
+      console.log(req.params);
       if (!req.params.cookbook) {
         return res.status(401).send({ error: "Unauthorized" });
       }
 
       const cookbook = await CookbookModel.findById(req.params.cookbook);
+      console.log(cookbook);
       if (
         cookbook &&
         cookbook.roles &&
