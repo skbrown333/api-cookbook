@@ -4,7 +4,7 @@ export interface ICookbook {
   cre_date: Date;
   subdomain: string;
   name: string;
-  character: Schema.Types.ObjectId;
+  character: string;
   game: Schema.Types.ObjectId;
   streams: string[];
   roles: any;

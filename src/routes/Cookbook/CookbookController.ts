@@ -7,7 +7,7 @@ class CookbookController extends BaseController {
     let options: any = {
       model,
     };
-    options.populateFields = "game character";
+    options.populateFields = "game";
     options.routeSingular = "cookbook";
     super(options);
   }
