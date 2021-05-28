@@ -126,15 +126,7 @@ export default class BaseController {
       }
 
       let modelId = req.params[this.routeSingular];
-      let model = await this.model.findById(modelId);
-
-      if (!model) {
-        return res
-          .status(500)
-          .json({ message: "Model not found", status: 500 });
-      }
-
-      await this.model.deleteOne();
+      await this.model.findByIdAndDelete(modelId);
 
       return res.status(200).send();
     } catch (err) {
