@@ -3,6 +3,7 @@ import { logger as log } from "./logging";
 import * as admin from "firebase-admin";
 import { CookbookModel } from "../models/Cookbook/cookbook.model";
 import { UserModel } from "../models/User/user.model";
+import axios from "axios";
 
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -39,18 +40,16 @@ const getAuthToken = (req, res, next) => {
 
 export const auth = (req, res, next) => {
   getAuthToken(req, res, async () => {
-    console.log(req.authToken);
-    console.log("params: ", req.params);
     try {
       const { authToken } = req;
       const userInfo = await admin.auth().verifyIdToken(authToken);
-      console.log(req.params);
+
       if (!req.params.cookbook) {
         return res.status(401).send({ error: "Unauthorized" });
       }
 
       const cookbook = await CookbookModel.findById(req.params.cookbook);
-      console.log(cookbook);
+
       if (
         cookbook &&
         cookbook.roles &&
@@ -61,7 +60,6 @@ export const auth = (req, res, next) => {
 
       return res.status(401).send({ error: "Unauthorized" });
     } catch (e) {
-      console.log(e.message);
       return res.status(401).send({ error: "Unauthorized" });
     }
   });
@@ -80,8 +78,72 @@ export const superAuth = (req, res, next) => {
 
       return res.status(401).send({ error: "Unauthorized" });
     } catch (e) {
-      console.log(e.message);
       return res.status(401).send({ error: "Unauthorized" });
     }
   });
+};
+
+export const login = (req, res, next) => {
+  const { code, redirectUrl } = req.body;
+  const clientId = process.env.DISCORD_ID;
+  const clientSecret = process.env.DISCORD_SECRET;
+  const params = `client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&code=${code}&redirect_uri=${redirectUrl}&scope=identify email`;
+  const baseUrl = "https://discord.com/api";
+  const headers = {
+    "Content-Type": "application/x-www-form-urlencoded",
+  };
+  let user;
+
+  createProfile()
+    .then((token) => {
+      res.status(200).send(token);
+    })
+    .catch((err) => {
+      res.status(500).send.json(err);
+    });
+
+  async function createProfile() {
+    try {
+      // Get discord auth token
+      const response = await axios.post(
+        `${baseUrl}/oauth2/token`,
+        encodeURI(params),
+        {
+          headers: headers,
+        }
+      );
+
+      // Get user with auth token
+      const newResponse = await axios.get(`${baseUrl}/users/@me`, {
+        headers: {
+          authorization: `${response.data.token_type} ${response.data.access_token}`,
+        },
+      });
+
+      user = newResponse.data;
+    } catch (err) {
+      throw err;
+    }
+
+    const userProfile = {
+      username: user.username,
+      discriminator: user.discriminator,
+      avatar: user.avatar,
+      email: user.email,
+      discord_id: user.id,
+    };
+
+    try {
+      const userRecord = await admin.auth().getUserByEmail(user.email);
+      return await admin.auth().createCustomToken(userRecord.uid);
+    } catch (err) {
+      try {
+        const userRecord = await admin.auth().createUser({ email: user.email });
+        await UserModel.create({ ...userProfile, ...{ uid: userRecord.uid } });
+        return await admin.auth().createCustomToken(userRecord.uid);
+      } catch (err) {
+        throw err;
+      }
+    }
+  }
 };

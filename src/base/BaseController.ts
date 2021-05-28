@@ -103,7 +103,7 @@ export default class BaseController {
           .json({ message: "Model not found", status: 500 });
       }
 
-      model = await this.model.findOneAndUpdate({ _id: modelId }, body, {
+      model = await this.model.findByIdAndUpdate(modelId, body, {
         new: true,
       });
 

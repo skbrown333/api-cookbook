@@ -5,7 +5,7 @@ export interface IPost {
   cre_account?: Schema.Types.ObjectId;
   title: string;
   body?: string;
-  cookbook: Schema.Types.ObjectId;
+  cookbook: string;
   character?: Schema.Types.ObjectId;
   tags: Schema.Types.ObjectId[];
 }

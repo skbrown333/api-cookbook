@@ -7,7 +7,7 @@ let schemaOptions = {
 let PostSchema = new Schema(
   {
     cre_date: { type: Date, required: true, default: new Date() },
-    cre_account: { type: Schema.Types.ObjectId, required: false },
+    cre_account: { type: Schema.Types.ObjectId, ref: "user", required: false },
     title: { type: String, required: true },
     body: { type: String, required: false },
     cookbook: {
@@ -16,8 +16,7 @@ let PostSchema = new Schema(
       required: false,
     },
     character: {
-      type: Schema.Types.ObjectId,
-      ref: "character",
+      type: String,
       required: false,
     },
     tags: [

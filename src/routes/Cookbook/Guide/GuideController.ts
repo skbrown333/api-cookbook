@@ -7,7 +7,7 @@ class GuideController extends BaseController {
     let options: any = {
       model,
     };
-    options.populateFields = "character post tag cookbook";
+    options.populateFields = "character tags cookbook";
     options.routeSingular = "guide";
     super(options);
   }

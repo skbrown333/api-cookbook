@@ -6,8 +6,8 @@ export interface IGuide {
   title: string;
   description?: string;
   cookbook: Schema.Types.ObjectId;
-  character?: Schema.Types.ObjectId;
-  sections: Schema.Types.ObjectId[];
+  character: string;
+  sections: any[];
   tags: Schema.Types.ObjectId[];
 }
 

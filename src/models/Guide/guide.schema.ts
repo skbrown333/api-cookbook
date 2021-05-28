@@ -16,13 +16,10 @@ let GuideSchema = new Schema(
       required: true,
     },
     character: {
-      type: Schema.Types.ObjectId,
-      ref: "character",
+      type: String,
       required: false,
     },
-    sections: [
-      { type: Schema.Types.ObjectId, ref: "post", required: true, default: [] },
-    ],
+    sections: [{ type: Object, required: true, default: [] }],
     tags: [
       { type: Schema.Types.ObjectId, ref: "tag", required: true, default: [] },
     ],
