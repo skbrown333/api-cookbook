@@ -99,7 +99,7 @@ export const login = (req, res, next) => {
       res.status(200).send(token);
     })
     .catch((err) => {
-      res.status(500).send.json(err);
+      res.status(500).send(err);
     });
 
   async function createProfile() {
