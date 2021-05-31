@@ -51,7 +51,7 @@ export default class BaseController {
     if (query.sort) {
       switch (query.sort) {
         case "cre_date":
-          sort = { cre_date: -1 };
+          sort = { _id: -1 };
           break;
       }
       delete query.sort;
@@ -66,7 +66,7 @@ export default class BaseController {
         ? {
             $or: [
               { title: { $regex: search, $options: "i" } },
-              { description: { $regex: search, $options: "i" } },
+              { body: { $regex: search, $options: "i" } },
             ],
           }
         : {}),
