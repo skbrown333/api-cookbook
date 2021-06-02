@@ -36,11 +36,40 @@ export default class BaseController {
 
   async get(req, res, next) {
     const { cookbook } = req.params;
+    const query = req.query;
+    const limit = parseInt(req.query.limit);
+    const page = parseInt(req.query.page);
+    const filters = req.query.filters;
+    const search = req.query.search;
+
+    delete req.query.page;
+    delete req.query.limit;
+    delete req.query.filters;
+    delete req.query.search;
+
+    let sort;
+    if (query.sort) {
+      switch (query.sort) {
+        case "cre_date":
+          sort = { _id: -1 };
+          break;
+      }
+      delete query.sort;
+    }
     let params = {
       ...(cookbook && this.routeSingular !== "cookbook"
         ? { cookbook: cookbook }
         : {}),
       ...req.query,
+      ...(filters && filters.length ? { tags: { $all: filters } } : {}),
+      ...(search
+        ? {
+            $or: [
+              { title: { $regex: search, $options: "i" } },
+              { body: { $regex: search, $options: "i" } },
+            ],
+          }
+        : {}),
     };
     try {
       let models;
@@ -48,6 +77,9 @@ export default class BaseController {
         models = await this.model
           .find(params)
           .populate(this.populateFields)
+          .sort(sort)
+          .skip(limit * (page - 1))
+          .limit(limit)
           .exec();
       } else {
         models = await this.model.find({});

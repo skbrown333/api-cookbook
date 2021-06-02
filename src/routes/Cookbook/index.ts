@@ -1,5 +1,5 @@
 import express from "express";
-import { auth, handleError } from "../../utils/utils";
+import { auth, handleError, superAuth } from "../../utils/utils";
 import CookbookController from "./CookbookController";
 import { wrapAsync } from "../../utils/utils";
 import { logRoutes } from "../../utils/logging";
@@ -12,8 +12,8 @@ const router = express.Router();
 router.get("", wrapAsync(CookbookController.get));
 router.get("/:cookbook", wrapAsync(CookbookController.getById));
 router.patch("/:cookbook", auth, wrapAsync(CookbookController.update));
-router.delete("/:cookbook", auth, wrapAsync(CookbookController.delete));
-router.post("", auth, wrapAsync(CookbookController.create));
+router.delete("/:cookbook", superAuth, wrapAsync(CookbookController.delete));
+router.post("", superAuth, wrapAsync(CookbookController.create));
 
 logRoutes("/cookbooks", router);
 
