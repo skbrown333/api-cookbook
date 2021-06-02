@@ -147,3 +147,30 @@ export const login = (req, res, next) => {
     }
   }
 };
+
+export const getSessionCookie = (req, res, next) => {
+  getAuthToken(req, res, async () => {
+    try {
+      const { authToken } = req;
+      await admin.auth().verifyIdToken(authToken);
+      // Set session expiration to 5 days.
+      const expiresIn = 60 * 60 * 24 * 14 * 1000;
+      const cookie = await admin
+        .auth()
+        .createSessionCookie(authToken, { expiresIn });
+      // Set cookie policy for session cookie.
+      const options = {
+        maxAge: expiresIn,
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        domain: ".cookbook.gg",
+      };
+      console.log("cookie: ", cookie);
+      res.cookie("session", cookie, options);
+      return res.end(JSON.stringify({ status: "success" }));
+    } catch (e) {
+      return res.status(401).send({ error: "Unauthorized" });
+    }
+  });
+};

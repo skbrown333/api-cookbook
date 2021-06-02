@@ -32,7 +32,17 @@ app.listen(process.env.PORT || 3000, () => {
 
 app.use(helmet());
 //app.use(headers);
-app.use(cors());
+const corsOptions = {
+  credentials: true,
+  origin: function (origin, callback) {
+    if (origin.indexOf("cookbook.gg") !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Blocked by CORS"));
+    }
+  },
+};
+app.use(cors(corsOptions));
 
 let morganLogStyle =
   ":method :url :status :response-time ms - :res[content-length]";
