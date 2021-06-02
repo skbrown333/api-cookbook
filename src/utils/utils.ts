@@ -166,11 +166,40 @@ export const getSessionCookie = (req, res, next) => {
         sameSite: "strict",
         domain: ".cookbook.gg",
       };
-      console.log("cookie: ", cookie);
       res.cookie("session", cookie, options);
       return res.end(JSON.stringify({ status: "success" }));
     } catch (e) {
       return res.status(401).send({ error: "Unauthorized" });
     }
   });
+};
+
+export const loginWithCookie = (req, res, next) => {
+  let cookies = req.headers.cookie;
+  if (cookies) {
+    cookies = cookies.split(";").reduce((obj, c) => {
+      var n = c.split("=");
+      obj[n[0].trim()] = n[1].trim();
+      return obj;
+    }, {});
+  }
+
+  getToken()
+    .then((token) => {
+      res.status(200).send(token);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+
+  async function getToken() {
+    try {
+      const userRecord = await admin
+        .auth()
+        .verifySessionCookie(cookies.session);
+      return await admin.auth().createCustomToken(userRecord.uid);
+    } catch (err) {
+      throw err;
+    }
+  }
 };

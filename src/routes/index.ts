@@ -1,5 +1,10 @@
 import express from "express";
-import { getSessionCookie, handleError, login } from "../utils/utils";
+import {
+  getSessionCookie,
+  handleError,
+  login,
+  loginWithCookie,
+} from "../utils/utils";
 
 import { default as CookbookRouter } from "./Cookbook";
 import { default as CharacterRouter } from "./Character";
@@ -14,6 +19,7 @@ router.use("/games", GameRouter);
 router.use("/users", UserRouter);
 router.post("/login", login);
 router.get("/session", getSessionCookie);
+router.get("/loginWithCookie", loginWithCookie);
 router.use(handleError);
 
 export default router;
