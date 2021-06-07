@@ -1,3 +1,4 @@
+require('dotenv').config();
 import { logger as log } from "./logging";
 
 import * as admin from "firebase-admin";

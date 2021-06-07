@@ -1,3 +1,4 @@
+require('dotenv').config();
 import express from "express";
 import mongoose from "mongoose";
 import morgan from "morgan";
@@ -26,8 +27,9 @@ mongoose.connection.on("error", (err) => {
   log.error("Mongoose Default Connection Error : " + err);
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  log.info("Server running on port 3000");
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  log.info(`Server running on port ${port}`);
 });
 
 app.use(helmet());
