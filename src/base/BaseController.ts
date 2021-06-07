@@ -41,11 +41,13 @@ export default class BaseController {
     const page = parseInt(req.query.page);
     const filters = req.query.filters;
     const search = req.query.search;
+    const contains = req.query.in;
 
     delete req.query.page;
     delete req.query.limit;
     delete req.query.filters;
     delete req.query.search;
+    delete req.query.in;
 
     let sort;
     if (query.sort) {
@@ -70,6 +72,7 @@ export default class BaseController {
             ],
           }
         : {}),
+      ...(contains && contains.length ? { uid: { $in: contains } } : {}),
     };
     try {
       let models;
