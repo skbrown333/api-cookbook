@@ -6,8 +6,6 @@ import { CookbookModel } from "../models/Cookbook/cookbook.model";
 import { UserModel } from "../models/User/user.model";
 import axios from "axios";
 
-console.log(process.env.MONGO_URL, process.env.FIREBASE_PROJECT_ID);
-
 admin.initializeApp({
   credential: admin.credential.cert({
     projectId: process.env.FIREBASE_PROJECT_ID,
