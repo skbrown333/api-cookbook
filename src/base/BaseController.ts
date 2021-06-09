@@ -1,3 +1,4 @@
+import createError from "http-errors";
 export default class BaseController {
   model: any;
   populateFields: any;
@@ -23,15 +24,11 @@ export default class BaseController {
       ...body,
       ...(cookbook ? { cookbook: cookbook } : {}),
     };
-    try {
-      let model = await this.model.create(params);
-      if (this.populateFields) {
-        model = await model.populate(this.populateFields).execPopulate();
-      }
-      return res.status(200).json(model);
-    } catch (err) {
-      return next(err);
+    let model = await this.model.create(params);
+    if (this.populateFields) {
+      model = await model.populate(this.populateFields).execPopulate();
     }
+    return res.status(200).json(model);
   }
 
   async get(req, res, next) {
@@ -74,99 +71,73 @@ export default class BaseController {
         : {}),
       ...(contains && contains.length ? { uid: { $in: contains } } : {}),
     };
-    try {
-      let models;
-      if (this.populateFields) {
-        models = await this.model
-          .find(params)
-          .populate(this.populateFields)
-          .sort(sort)
-          .skip(limit * (page - 1))
-          .limit(limit)
-          .exec();
-      } else {
-        models = await this.model.find({});
-      }
-      return res.status(200).send(models);
-    } catch (err) {
-      return next(err);
+    let models;
+    if (this.populateFields) {
+      models = await this.model
+        .find(params)
+        .populate(this.populateFields)
+        .sort(sort)
+        .skip(limit * (page - 1))
+        .limit(limit)
+        .exec();
+    } else {
+      models = await this.model.find({});
     }
+    return res.status(200).send(models);
   }
 
   async getById(req, res, next) {
-    try {
-      if (!req.params || !req.params[this.routeSingular]) {
-        return res
-          .status(500)
-          .json({ message: "Missing required params", status: 500 });
-      }
-
-      let modelId = req.params[this.routeSingular];
-      let model = await this.model.findById(modelId);
-
-      if (!model) {
-        return res
-          .status(500)
-          .json({ message: "Model not found", status: 500 });
-      }
-
-      if (this.populateFields) {
-        model = await model.populate(this.populateFields).execPopulate();
-      }
-
-      return res.status(200).send(model);
-    } catch (err) {
-      return next(err);
+    if (!req.params || !req.params[this.routeSingular]) {
+      return next(createError(500, "Missing required params"));
     }
+
+    let modelId = req.params[this.routeSingular];
+    let model = await this.model.findById(modelId);
+
+    if (!model) {
+      return res.status(500).json({ message: "Model not found", status: 500 });
+    }
+
+    if (this.populateFields) {
+      model = await model.populate(this.populateFields).execPopulate();
+    }
+
+    return res.status(200).send(model);
   }
 
   async update(req, res, next) {
     let body = req.body;
-    try {
-      if (!req.params || !req.params[this.routeSingular]) {
-        return res
-          .status(500)
-          .json({ message: "Missing required params", status: 500 });
-      }
-
-      let modelId = req.params[this.routeSingular];
-      let model = await this.model.findById(modelId);
-
-      if (!model) {
-        return res
-          .status(500)
-          .json({ message: "Model not found", status: 500 });
-      }
-
-      model = await this.model.findByIdAndUpdate(modelId, body, {
-        new: true,
-      });
-
-      if (this.populateFields) {
-        model = await model.populate(this.populateFields).execPopulate();
-      }
-
-      return res.status(200).json(model);
-    } catch (err) {
-      return next(err);
+    if (!req.params || !req.params[this.routeSingular]) {
+      return next(createError(500, "Missing required params"));
     }
+
+    let modelId = req.params[this.routeSingular];
+    let model = await this.model.findById(modelId);
+
+    if (!model) {
+      return res.status(500).json({ message: "Model not found", status: 500 });
+    }
+
+    model = await this.model.findByIdAndUpdate(modelId, body, {
+      new: true,
+    });
+
+    if (this.populateFields) {
+      model = await model.populate(this.populateFields).execPopulate();
+    }
+
+    return res.status(200).json(model);
   }
 
   async delete(req, res, next) {
-    try {
-      if (!req.params || !req.params[this.routeSingular]) {
-        return res
-          .status(500)
-          .json({ message: "Missing required params", status: 500 });
-      }
-
-      let modelId = req.params[this.routeSingular];
-      await this.model.findByIdAndDelete(modelId);
-
-      return res.status(200).send();
-    } catch (err) {
-      return next(err);
+    if (!req.params || !req.params[this.routeSingular]) {
+      return next(createError(500, "Missing required params"));
     }
+
+    let modelId = req.params[this.routeSingular];
+    await this.model.findByIdAndDelete(modelId);
+
+    return res.status(200).send();
   }
 }
 

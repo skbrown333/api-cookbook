@@ -1,6 +1,6 @@
 require("dotenv").config();
 import { logger as log } from "./logging";
-import { createError } from "http-errors";
+import createError from "http-errors";
 
 import * as admin from "firebase-admin";
 import { CookbookModel } from "../models/Cookbook/cookbook.model";

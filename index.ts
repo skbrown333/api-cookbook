@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
-import { createError } from "http-errors";
+import createError from "http-errors";
 
 const app = express();
 
@@ -35,7 +35,7 @@ app.use(helmet());
 const corsOptions = {
   credentials: true,
   origin: function (origin, callback) {
-    if (origin && origin.indexOf("cookbook.gg") !== -1) {
+    if (origin && process.env.CORS && origin.indexOf(process.env.CORS) !== -1) {
       callback(null, true);
     } else {
       callback(createError(500, "Blocked by CORS"));
