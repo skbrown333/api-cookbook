@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
+import { createError } from "http-errors";
 
 const app = express();
 
@@ -34,10 +35,10 @@ app.use(helmet());
 const corsOptions = {
   credentials: true,
   origin: function (origin, callback) {
-    if (origin && origin.indexOf("localhost") !== -1) {
+    if (origin && origin.indexOf("cookbook.gg") !== -1) {
       callback(null, true);
     } else {
-      callback(new Error("Blocked by CORS"));
+      callback(createError(500, "Blocked by CORS"));
     }
   },
 };
