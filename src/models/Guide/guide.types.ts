@@ -9,6 +9,7 @@ export interface IGuide {
   character: string;
   sections: any[];
   tags: Schema.Types.ObjectId[];
+  slug: string;
 }
 
 export interface IGuideDocument extends IGuide, Document {}

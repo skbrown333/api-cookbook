@@ -23,6 +23,10 @@ let GuideSchema = new Schema(
     tags: [
       { type: Schema.Types.ObjectId, ref: "tag", required: true, default: [] },
     ],
+    slug: {type: String, required: true, default: function() {
+      const _t = this as any;
+      return _t._id;
+    }},
   },
   schemaOptions
 );
