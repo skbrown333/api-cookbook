@@ -8,9 +8,9 @@ const router = express.Router({ mergeParams: true });
 
 router.get("", wrapAsync(TagController.get));
 router.get("/:tag", wrapAsync(TagController.getById));
-router.patch("/:tag", auth, wrapAsync(TagController.update));
-router.delete("/:tag", auth, wrapAsync(TagController.delete));
-router.post("", auth, wrapAsync(TagController.create));
+router.patch("/:tag", wrapAsync(auth), wrapAsync(TagController.update));
+router.delete("/:tag", wrapAsync(auth), wrapAsync(TagController.delete));
+router.post("", wrapAsync(auth), wrapAsync(TagController.create));
 
 logRoutes("/cookbooks/:cookbook/tags", router);
 router.use(handleError);

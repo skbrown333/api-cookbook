@@ -8,9 +8,9 @@ const router = express.Router();
 
 router.get("", wrapAsync(GameController.get));
 router.get("/:id", wrapAsync(GameController.getById));
-router.patch("/:id", superAuth, wrapAsync(GameController.update));
-router.delete("/:id", superAuth, wrapAsync(GameController.delete));
-router.post("", superAuth, wrapAsync(GameController.create));
+router.patch("/:id", wrapAsync(superAuth), wrapAsync(GameController.update));
+router.delete("/:id", wrapAsync(superAuth), wrapAsync(GameController.delete));
+router.post("", wrapAsync(superAuth), wrapAsync(GameController.create));
 
 logRoutes("/games", router);
 router.use(handleError);

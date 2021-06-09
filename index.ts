@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 import express from "express";
 import mongoose from "mongoose";
 import morgan from "morgan";
@@ -11,8 +11,6 @@ import { logger as log } from "./src/utils/logging";
 
 import routes from "./src/routes/index";
 
-/* Middleware */
-import headers from "./src/middleware/headers";
 import { ENV } from "./src/constants/constants";
 
 mongoose.connect(ENV.db_url);
@@ -33,11 +31,10 @@ app.listen(port, () => {
 });
 
 app.use(helmet());
-//app.use(headers);
 const corsOptions = {
   credentials: true,
   origin: function (origin, callback) {
-    if (origin.indexOf("cookbook.gg") !== -1) {
+    if (origin && origin.indexOf("localhost") !== -1) {
       callback(null, true);
     } else {
       callback(new Error("Blocked by CORS"));

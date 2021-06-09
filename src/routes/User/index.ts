@@ -8,9 +8,9 @@ const router = express.Router();
 
 router.get("", wrapAsync(UserController.get));
 router.get("/:user", wrapAsync(UserController.getById));
-router.patch("/:user", superAuth, wrapAsync(UserController.update));
-router.delete("/:user", superAuth, wrapAsync(UserController.delete));
-router.post("", superAuth, wrapAsync(UserController.create));
+router.patch("/:user", wrapAsync(superAuth), wrapAsync(UserController.update));
+router.delete("/:user", wrapAsync(superAuth), wrapAsync(UserController.delete));
+router.post("", wrapAsync(superAuth), wrapAsync(UserController.create));
 
 logRoutes("/users", router);
 router.use(handleError);

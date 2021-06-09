@@ -8,9 +8,9 @@ const router = express.Router({ mergeParams: true });
 
 router.get("", wrapAsync(PostController.get));
 router.get("/:post", wrapAsync(PostController.getById));
-router.patch("/:post", auth, wrapAsync(PostController.update));
-router.delete("/:post", auth, wrapAsync(PostController.delete));
-router.post("", auth, wrapAsync(PostController.create));
+router.patch("/:post", wrapAsync(auth), wrapAsync(PostController.update));
+router.delete("/:post", wrapAsync(auth), wrapAsync(PostController.delete));
+router.post("", wrapAsync(auth), wrapAsync(PostController.create));
 
 logRoutes("/cookbooks/:cookbook/posts", router);
 router.use(handleError);

@@ -11,9 +11,17 @@ const router = express.Router();
 
 router.get("", wrapAsync(CookbookController.get));
 router.get("/:cookbook", wrapAsync(CookbookController.getById));
-router.patch("/:cookbook", auth, wrapAsync(CookbookController.update));
-router.delete("/:cookbook", superAuth, wrapAsync(CookbookController.delete));
-router.post("", superAuth, wrapAsync(CookbookController.create));
+router.patch(
+  "/:cookbook",
+  wrapAsync(auth),
+  wrapAsync(CookbookController.update)
+);
+router.delete(
+  "/:cookbook",
+  wrapAsync(superAuth),
+  wrapAsync(CookbookController.delete)
+);
+router.post("", wrapAsync(superAuth), wrapAsync(CookbookController.create));
 
 logRoutes("/cookbooks", router);
 

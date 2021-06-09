@@ -8,9 +8,17 @@ const router = express.Router();
 
 router.get("", wrapAsync(CharacterController.get));
 router.get("/:id", wrapAsync(CharacterController.getById));
-router.patch("/:id", superAuth, wrapAsync(CharacterController.update));
-router.delete("/:id", superAuth, wrapAsync(CharacterController.delete));
-router.post("", superAuth, wrapAsync(CharacterController.create));
+router.patch(
+  "/:id",
+  wrapAsync(superAuth),
+  wrapAsync(CharacterController.update)
+);
+router.delete(
+  "/:id",
+  wrapAsync(superAuth),
+  wrapAsync(CharacterController.delete)
+);
+router.post("", wrapAsync(superAuth), wrapAsync(CharacterController.create));
 
 logRoutes("/characters", router);
 router.use(handleError);

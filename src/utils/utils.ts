@@ -1,5 +1,6 @@
-require('dotenv').config();
+require("dotenv").config();
 import { logger as log } from "./logging";
+import { createError } from "http-errors";
 
 import * as admin from "firebase-admin";
 import { CookbookModel } from "../models/Cookbook/cookbook.model";
@@ -24,7 +25,7 @@ export function wrapAsync(fn) {
 
 export function handleError(error, req, res, next) {
   log.error(error.message);
-  res.status(500).json({ message: error.message, status: error.status });
+  res.status(error.status).json({ message: error.message });
 }
 
 const getAuthToken = (req, res, next) => {
@@ -41,46 +42,37 @@ const getAuthToken = (req, res, next) => {
 
 export const auth = (req, res, next) => {
   getAuthToken(req, res, async () => {
-    try {
-      const { authToken } = req;
-      const userInfo = await admin.auth().verifyIdToken(authToken);
+    const { authToken } = req;
+    const userInfo = await admin.auth().verifyIdToken(authToken);
 
-      if (!req.params.cookbook) {
-        return res.status(401).send({ error: "Unauthorized" });
-      }
-
-      const cookbook = await CookbookModel.findById(req.params.cookbook);
-
-      if (
-        cookbook &&
-        cookbook.roles &&
-        cookbook.roles[userInfo.uid] === "admin"
-      ) {
-        return next();
-      }
-
-      return res.status(401).send({ error: "Unauthorized" });
-    } catch (e) {
-      return res.status(401).send({ error: "Unauthorized" });
+    if (!req.params.cookbook) {
+      return next(createError(401, "Unauthorized"));
     }
+
+    const cookbook = await CookbookModel.findById(req.params.cookbook);
+
+    if (
+      cookbook &&
+      cookbook.roles &&
+      cookbook.roles[userInfo.uid] === "admin"
+    ) {
+      return next();
+    }
+    return next(createError(401, "Unauthorized"));
   });
 };
 
 export const superAuth = (req, res, next) => {
   getAuthToken(req, res, async () => {
-    try {
-      const { authToken } = req;
-      const userInfo = await admin.auth().verifyIdToken(authToken);
+    const { authToken } = req;
+    const userInfo = await admin.auth().verifyIdToken(authToken);
 
-      const users = await UserModel.find({ uid: userInfo.uid });
-      if (users[0] && users[0].super_admin) {
-        return next();
-      }
-
-      return res.status(401).send({ error: "Unauthorized" });
-    } catch (e) {
-      return res.status(401).send({ error: "Unauthorized" });
+    const users = await UserModel.find({ uid: userInfo.uid });
+    if (users[0] && users[0].super_admin) {
+      return next();
     }
+
+    return next(createError(401, "Unauthorized"));
   });
 };
 
@@ -100,7 +92,7 @@ export const login = (req, res, next) => {
       res.status(200).send(token);
     })
     .catch((err) => {
-      res.status(500).send(err);
+      return next(createError(500, "Error Logging In"));
     });
 
   async function createProfile() {
@@ -170,7 +162,7 @@ export const getSessionCookie = (req, res, next) => {
       res.cookie("session", cookie, options);
       return res.end(JSON.stringify({ status: "success" }));
     } catch (e) {
-      return res.status(401).send({ error: "Unauthorized" });
+      return next(createError(401, "Unauthorized"));
     }
   });
 };
@@ -190,7 +182,7 @@ export const loginWithCookie = (req, res, next) => {
       res.status(200).send(token);
     })
     .catch((err) => {
-      res.status(500).send(err);
+      return next(createError(500, "Error Logging In"));
     });
 
   async function getToken() {
