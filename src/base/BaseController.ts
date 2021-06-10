@@ -1,10 +1,11 @@
+import createError from 'http-errors';
 export default class BaseController {
   model: any;
   populateFields: any;
   routeSingular: any;
 
   constructor(options) {
-    if (!options || !options.model) throw new Error("Must Pass Options");
+    if (!options || !options.model) throw new Error('Must Pass Options');
 
     this.model = options.model;
     this.populateFields = options.populateFields;
@@ -17,21 +18,17 @@ export default class BaseController {
   }
 
   async create(req, res, next) {
-    let body = req.body;
+    const body = req.body;
     const { cookbook } = req.params;
-    let params = {
+    const params = {
       ...body,
       ...(cookbook ? { cookbook: cookbook } : {}),
     };
-    try {
-      let model = await this.model.create(params);
-      if (this.populateFields) {
-        model = await model.populate(this.populateFields).execPopulate();
-      }
-      return res.status(200).json(model);
-    } catch (err) {
-      return next(err);
+    let model = await this.model.create(params);
+    if (this.populateFields) {
+      model = await model.populate(this.populateFields).execPopulate();
     }
+    return res.status(200).json(model);
   }
 
   async get(req, res, next) {
@@ -52,121 +49,107 @@ export default class BaseController {
     let sort;
     if (query.sort) {
       switch (query.sort) {
-        case "cre_date":
+        case 'cre_date': {
           sort = { _id: -1 };
           break;
+        }
       }
       delete query.sort;
     }
-    let params = {
-      ...(cookbook && this.routeSingular !== "cookbook"
-        ? { cookbook: cookbook }
-        : {}),
-      ...req.query,
-      ...(filters && filters.length ? { tags: { $all: filters } } : {}),
-      ...(search
-        ? {
-            $or: [
-              { title: { $regex: search, $options: "i" } },
-              { body: { $regex: search, $options: "i" } },
-            ],
-          }
-        : {}),
-      ...(contains && contains.length ? { uid: { $in: contains } } : {}),
-    };
-    try {
-      let models;
-      if (this.populateFields) {
-        models = await this.model
-          .find(params)
-          .populate(this.populateFields)
-          .sort(sort)
-          .skip(limit * (page - 1))
-          .limit(limit)
-          .exec();
-      } else {
-        models = await this.model.find({});
-      }
-      return res.status(200).send(models);
-    } catch (err) {
-      return next(err);
+
+    const params: any = { ...req.query };
+
+    if (cookbook && this.routeSingular !== 'cookbook') {
+      params.cookbook = cookbook;
     }
+
+    if (filters && filters.length) {
+      params.tags = { $all: filters };
+    }
+
+    if (search) {
+      params['$or'] = [
+        { title: { $regex: search, $options: 'i' } },
+        { body: { $regex: search, $options: 'i' } },
+      ];
+    }
+
+    if (contains && contains.length) {
+      params.uid = { $in: contains };
+    }
+
+    let models;
+    if (this.populateFields) {
+      models = await this.model
+        .find(params)
+        .populate(this.populateFields)
+        .sort(sort)
+        .skip(limit * (page - 1))
+        .limit(limit)
+        .exec();
+    } else {
+      models = await this.model
+        .find(params)
+        .sort(sort)
+        .skip(limit * (page - 1))
+        .limit(limit)
+        .exec();
+    }
+    return res.status(200).send(models);
   }
 
   async getById(req, res, next) {
-    try {
-      if (!req.params || !req.params[this.routeSingular]) {
-        return res
-          .status(500)
-          .json({ message: "Missing required params", status: 500 });
-      }
-
-      let modelId = req.params[this.routeSingular];
-      let model = await this.model.findById(modelId);
-
-      if (!model) {
-        return res
-          .status(500)
-          .json({ message: "Model not found", status: 500 });
-      }
-
-      if (this.populateFields) {
-        model = await model.populate(this.populateFields).execPopulate();
-      }
-
-      return res.status(200).send(model);
-    } catch (err) {
-      return next(err);
+    if (!req.params || !req.params[this.routeSingular]) {
+      return next(createError(500, 'Missing required params'));
     }
+
+    const modelId = req.params[this.routeSingular];
+    let model = await this.model.findById(modelId);
+
+    if (!model) {
+      return next(createError(500, 'Model Not Found'));
+    }
+
+    if (this.populateFields) {
+      model = await model.populate(this.populateFields).execPopulate();
+    }
+
+    return res.status(200).send(model);
   }
 
   async update(req, res, next) {
-    let body = req.body;
-    try {
-      if (!req.params || !req.params[this.routeSingular]) {
-        return res
-          .status(500)
-          .json({ message: "Missing required params", status: 500 });
-      }
-
-      let modelId = req.params[this.routeSingular];
-      let model = await this.model.findById(modelId);
-
-      if (!model) {
-        return res
-          .status(500)
-          .json({ message: "Model not found", status: 500 });
-      }
-
-      model = await this.model.findByIdAndUpdate(modelId, body, {
-        new: true,
-      });
-
-      if (this.populateFields) {
-        model = await model.populate(this.populateFields).execPopulate();
-      }
-
-      return res.status(200).json(model);
-    } catch (err) {
-      return next(err);
+    const body = req.body;
+    if (!req.params || !req.params[this.routeSingular]) {
+      return next(createError(500, 'Missing required params'));
     }
+
+    const modelId = req.params[this.routeSingular];
+    let model = await this.model.findById(modelId);
+
+    if (!model) {
+      return next(createError(500, 'Model Not Found'));
+    }
+
+    model = await this.model.findByIdAndUpdate(modelId, body, {
+      new: true,
+    });
+
+    if (this.populateFields) {
+      model = await model.populate(this.populateFields).execPopulate();
+    }
+
+    return res.status(200).json(model);
   }
 
   async delete(req, res, next) {
-    try {
-      if (!req.params || !req.params[this.routeSingular]) {
-        return res
-          .status(500)
-          .json({ message: "Missing required params", status: 500 });
-      }
-
-      let modelId = req.params[this.routeSingular];
-      await this.model.findByIdAndDelete(modelId);
-
-      return res.status(200).send();
-    } catch (err) {
-      return next(err);
+    if (!req.params || !req.params[this.routeSingular]) {
+      return next(createError(500, 'Missing required params'));
     }
+
+    const modelId = req.params[this.routeSingular];
+    await this.model.findByIdAndDelete(modelId);
+
+    return res.status(200).send();
   }
 }
 

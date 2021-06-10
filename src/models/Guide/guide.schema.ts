@@ -1,10 +1,10 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
-let schemaOptions = {
+const schemaOptions = {
   versionKey: false,
 };
 
-let GuideSchema = new Schema(
+const GuideSchema = new Schema(
   {
     cre_date: { type: Date, required: true, default: new Date() },
     cre_account: { type: Schema.Types.ObjectId, required: false },
@@ -12,7 +12,7 @@ let GuideSchema = new Schema(
     description: { type: String, required: false },
     cookbook: {
       type: Schema.Types.ObjectId,
-      ref: "cookbook",
+      ref: 'cookbook',
       required: true,
     },
     character: {
@@ -21,14 +21,14 @@ let GuideSchema = new Schema(
     },
     sections: [{ type: Object, required: true, default: [] }],
     tags: [
-      { type: Schema.Types.ObjectId, ref: "tag", required: true, default: [] },
+      { type: Schema.Types.ObjectId, ref: 'tag', required: true, default: [] },
     ],
     slug: {type: String, required: true, default: function() {
       const _t = this as any;
       return _t._id;
     }},
   },
-  schemaOptions
+  schemaOptions,
 );
 
 export default GuideSchema;

@@ -1,14 +1,14 @@
-import BaseController from "../../../base/BaseController";
-import { TagModel } from "../../../models/Tag/tag.model";
+import BaseController from '../../../base/BaseController';
+import { TagModel } from '../../../models/Tag/tag.model';
 
 class TagController extends BaseController {
   constructor() {
-    let model = TagModel;
-    let options: any = {
+    const model = TagModel;
+    const options: any = {
       model,
     };
-    options.populateFields = "cookbook";
-    options.routeSingular = "tag";
+    options.populateFields = 'cookbook';
+    options.routeSingular = 'tag';
     super(options);
   }
 }
