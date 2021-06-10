@@ -55,22 +55,28 @@ export default class BaseController {
       }
       delete query.sort;
     }
-    let params = {
-      ...(cookbook && this.routeSingular !== "cookbook"
-        ? { cookbook: cookbook }
-        : {}),
-      ...req.query,
-      ...(filters && filters.length ? { tags: { $all: filters } } : {}),
-      ...(search
-        ? {
-            $or: [
-              { title: { $regex: search, $options: "i" } },
-              { body: { $regex: search, $options: "i" } },
-            ],
-          }
-        : {}),
-      ...(contains && contains.length ? { uid: { $in: contains } } : {}),
-    };
+
+    let params: any = { ...req.query };
+
+    if (cookbook && this.routeSingular !== "cookbook") {
+      params.cookbook = cookbook;
+    }
+
+    if (filters && filters.length) {
+      params.tags = { $all: filters };
+    }
+
+    if (search) {
+      params["$or"] = [
+        { title: { $regex: search, $options: "i" } },
+        { body: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (contains && contains.length) {
+      params.uid = { $in: contains };
+    }
+
     let models;
     if (this.populateFields) {
       models = await this.model
@@ -81,7 +87,12 @@ export default class BaseController {
         .limit(limit)
         .exec();
     } else {
-      models = await this.model.find({});
+      models = await this.model
+        .find(params)
+        .sort(sort)
+        .skip(limit * (page - 1))
+        .limit(limit)
+        .exec();
     }
     return res.status(200).send(models);
   }

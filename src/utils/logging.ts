@@ -5,7 +5,7 @@
 // =================
 // L I B R A R I E S
 // =================
-import winston from 'winston';
+import winston from "winston";
 
 // Retrieve possible transports
 const { Console } = winston.transports;
@@ -14,13 +14,13 @@ const { Console } = winston.transports;
 const { combine, timestamp, printf } = winston.format;
 
 // Create a custom format
-const logFormat = printf(info => {
+const logFormat = printf((info) => {
   return `${info.timestamp} - ${info.level}: ${info.message}`;
 });
 
 // Customize transports
 const defaultConsoleTransport = new Console({
-  format: combine(timestamp(), logFormat)
+  format: combine(timestamp(), logFormat),
 });
 
 // Define transport list
@@ -28,12 +28,12 @@ const transportArray = [defaultConsoleTransport];
 
 // Create Custom logger
 export const logger = winston.createLogger({
-  transports: transportArray
+  transports: transportArray,
 });
 
-export const logRoutes = function(prefix, routes) {
+export const logRoutes = function (prefix, routes) {
   let routeList = routes.stack;
-  routeList.forEach(r => {
+  routeList.forEach((r) => {
     let method = r.route.stack[0].method.toUpperCase();
     let path = prefix + r.route.path;
     logger.info(`${method} - ${path}`);
