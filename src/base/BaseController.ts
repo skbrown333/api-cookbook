@@ -107,7 +107,7 @@ export default class BaseController {
     let model = await this.model.findById(modelId);
 
     if (!model) {
-      return res.status(500).json({ message: 'Model not found', status: 500 });
+      return next(createError(500, 'Model Not Found'));
     }
 
     if (this.populateFields) {
@@ -127,7 +127,7 @@ export default class BaseController {
     let model = await this.model.findById(modelId);
 
     if (!model) {
-      return res.status(500).json({ message: 'Model not found', status: 500 });
+      return next(createError(500, 'Model Not Found'));
     }
 
     model = await this.model.findByIdAndUpdate(modelId, body, {
