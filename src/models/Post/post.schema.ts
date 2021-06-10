@@ -1,18 +1,18 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
-let schemaOptions = {
+const schemaOptions = {
   versionKey: false,
 };
 
-let PostSchema = new Schema(
+const PostSchema = new Schema(
   {
     cre_date: { type: Date, required: true, default: new Date() },
-    cre_account: { type: Schema.Types.ObjectId, ref: "user", required: false },
+    cre_account: { type: Schema.Types.ObjectId, ref: 'user', required: false },
     title: { type: String, required: true },
     body: { type: String, required: false },
     cookbook: {
       type: Schema.Types.ObjectId,
-      ref: "cookbook",
+      ref: 'cookbook',
       required: false,
     },
     character: {
@@ -20,10 +20,10 @@ let PostSchema = new Schema(
       required: false,
     },
     tags: [
-      { type: Schema.Types.ObjectId, ref: "tag", required: true, default: [] },
+      { type: Schema.Types.ObjectId, ref: 'tag', required: true, default: [] },
     ],
   },
-  schemaOptions
+  schemaOptions,
 );
 
 export default PostSchema;

@@ -1,10 +1,10 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
-let schemaOptions = {
+const schemaOptions = {
   versionKey: false,
 };
 
-let CookbookSchema = new Schema(
+const CookbookSchema = new Schema(
   {
     cre_date: {
       type: Date,
@@ -17,11 +17,11 @@ let CookbookSchema = new Schema(
       type: String,
       required: true,
     },
-    game: { type: Schema.Types.ObjectId, ref: "game", required: true },
+    game: { type: Schema.Types.ObjectId, ref: 'game', required: true },
     streams: [{ type: String, required: true, default: [] }],
     roles: { type: Object, required: true, default: {} },
   },
-  schemaOptions
+  schemaOptions,
 );
 
 export default CookbookSchema;

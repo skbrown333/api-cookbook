@@ -1,11 +1,11 @@
-import createError from "http-errors";
+import createError from 'http-errors';
 export default class BaseController {
   model: any;
   populateFields: any;
   routeSingular: any;
 
   constructor(options) {
-    if (!options || !options.model) throw new Error("Must Pass Options");
+    if (!options || !options.model) throw new Error('Must Pass Options');
 
     this.model = options.model;
     this.populateFields = options.populateFields;
@@ -18,9 +18,9 @@ export default class BaseController {
   }
 
   async create(req, res, next) {
-    let body = req.body;
+    const body = req.body;
     const { cookbook } = req.params;
-    let params = {
+    const params = {
       ...body,
       ...(cookbook ? { cookbook: cookbook } : {}),
     };
@@ -49,16 +49,17 @@ export default class BaseController {
     let sort;
     if (query.sort) {
       switch (query.sort) {
-        case "cre_date":
+        case 'cre_date': {
           sort = { _id: -1 };
           break;
+        }
       }
       delete query.sort;
     }
 
-    let params: any = { ...req.query };
+    const params: any = { ...req.query };
 
-    if (cookbook && this.routeSingular !== "cookbook") {
+    if (cookbook && this.routeSingular !== 'cookbook') {
       params.cookbook = cookbook;
     }
 
@@ -67,9 +68,9 @@ export default class BaseController {
     }
 
     if (search) {
-      params["$or"] = [
-        { title: { $regex: search, $options: "i" } },
-        { body: { $regex: search, $options: "i" } },
+      params['$or'] = [
+        { title: { $regex: search, $options: 'i' } },
+        { body: { $regex: search, $options: 'i' } },
       ];
     }
 
@@ -99,14 +100,14 @@ export default class BaseController {
 
   async getById(req, res, next) {
     if (!req.params || !req.params[this.routeSingular]) {
-      return next(createError(500, "Missing required params"));
+      return next(createError(500, 'Missing required params'));
     }
 
-    let modelId = req.params[this.routeSingular];
+    const modelId = req.params[this.routeSingular];
     let model = await this.model.findById(modelId);
 
     if (!model) {
-      return res.status(500).json({ message: "Model not found", status: 500 });
+      return res.status(500).json({ message: 'Model not found', status: 500 });
     }
 
     if (this.populateFields) {
@@ -117,16 +118,16 @@ export default class BaseController {
   }
 
   async update(req, res, next) {
-    let body = req.body;
+    const body = req.body;
     if (!req.params || !req.params[this.routeSingular]) {
-      return next(createError(500, "Missing required params"));
+      return next(createError(500, 'Missing required params'));
     }
 
-    let modelId = req.params[this.routeSingular];
+    const modelId = req.params[this.routeSingular];
     let model = await this.model.findById(modelId);
 
     if (!model) {
-      return res.status(500).json({ message: "Model not found", status: 500 });
+      return res.status(500).json({ message: 'Model not found', status: 500 });
     }
 
     model = await this.model.findByIdAndUpdate(modelId, body, {
@@ -142,10 +143,10 @@ export default class BaseController {
 
   async delete(req, res, next) {
     if (!req.params || !req.params[this.routeSingular]) {
-      return next(createError(500, "Missing required params"));
+      return next(createError(500, 'Missing required params'));
     }
 
-    let modelId = req.params[this.routeSingular];
+    const modelId = req.params[this.routeSingular];
     await this.model.findByIdAndDelete(modelId);
 
     return res.status(200).send();

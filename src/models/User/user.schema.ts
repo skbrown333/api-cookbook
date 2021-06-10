@@ -1,10 +1,10 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
-let schemaOptions = {
+const schemaOptions = {
   versionKey: false,
 };
 
-let UserSchema = new Schema(
+const UserSchema = new Schema(
   {
     email: { type: String, required: true },
     uid: { type: String, required: true },
@@ -14,12 +14,12 @@ let UserSchema = new Schema(
     avatar: { type: String, required: true },
     cookbook: {
       type: Schema.Types.ObjectId,
-      ref: "cookbook",
+      ref: 'cookbook',
       required: false,
     },
     super_admin: { type: Boolean, required: true, default: false },
   },
-  schemaOptions
+  schemaOptions,
 );
 
 export default UserSchema;

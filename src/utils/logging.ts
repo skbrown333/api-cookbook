@@ -5,7 +5,7 @@
 // =================
 // L I B R A R I E S
 // =================
-import winston from "winston";
+import winston from 'winston';
 
 // Retrieve possible transports
 const { Console } = winston.transports;
@@ -32,10 +32,10 @@ export const logger = winston.createLogger({
 });
 
 export const logRoutes = function (prefix, routes) {
-  let routeList = routes.stack;
+  const routeList = routes.stack;
   routeList.forEach((r) => {
-    let method = r.route.stack[0].method.toUpperCase();
-    let path = prefix + r.route.path;
+    const method = r.route.stack[0].method.toUpperCase();
+    const path = prefix + r.route.path;
     logger.info(`${method} - ${path}`);
   });
 };

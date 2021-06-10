@@ -1,26 +1,26 @@
-import express from "express";
-import { handleError, superAuth } from "../../utils/utils";
-import CharacterController from "./CharacterController";
-import { wrapAsync } from "../../utils/utils";
-import { logRoutes } from "../../utils/logging";
+import express from 'express';
+import { handleError, superAuth } from '../../utils/utils';
+import CharacterController from './CharacterController';
+import { wrapAsync } from '../../utils/utils';
+import { logRoutes } from '../../utils/logging';
 
 const router = express.Router();
 
-router.get("", wrapAsync(CharacterController.get));
-router.get("/:id", wrapAsync(CharacterController.getById));
+router.get('', wrapAsync(CharacterController.get));
+router.get('/:id', wrapAsync(CharacterController.getById));
 router.patch(
-  "/:id",
+  '/:id',
   wrapAsync(superAuth),
-  wrapAsync(CharacterController.update)
+  wrapAsync(CharacterController.update),
 );
 router.delete(
-  "/:id",
+  '/:id',
   wrapAsync(superAuth),
-  wrapAsync(CharacterController.delete)
+  wrapAsync(CharacterController.delete),
 );
-router.post("", wrapAsync(superAuth), wrapAsync(CharacterController.create));
+router.post('', wrapAsync(superAuth), wrapAsync(CharacterController.create));
 
-logRoutes("/characters", router);
+logRoutes('/characters', router);
 router.use(handleError);
 
 export default router;

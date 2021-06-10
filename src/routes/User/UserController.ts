@@ -1,14 +1,14 @@
-import BaseController from "../../base/BaseController";
-import { UserModel } from "../../models/User/user.model";
+import BaseController from '../../base/BaseController';
+import { UserModel } from '../../models/User/user.model';
 
 class UserController extends BaseController {
   constructor() {
-    let model = UserModel;
-    let options: any = {
+    const model = UserModel;
+    const options: any = {
       model,
     };
-    options.populateFields = "cookbook";
-    options.routeSingular = "user";
+    options.populateFields = 'cookbook';
+    options.routeSingular = 'user';
     super(options);
   }
 }

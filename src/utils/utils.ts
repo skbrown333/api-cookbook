@@ -1,18 +1,18 @@
-require("dotenv").config();
-import { logger as log } from "./logging";
-import createError from "http-errors";
+require('dotenv').config();
+import { logger as log } from './logging';
+import createError from 'http-errors';
 
-import * as admin from "firebase-admin";
-import { CookbookModel } from "../models/Cookbook/cookbook.model";
-import { UserModel } from "../models/User/user.model";
-import axios from "axios";
+import * as admin from 'firebase-admin';
+import { CookbookModel } from '../models/Cookbook/cookbook.model';
+import { UserModel } from '../models/User/user.model';
+import axios from 'axios';
 
 admin.initializeApp({
   credential: admin.credential.cert({
     projectId: process.env.FIREBASE_PROJECT_ID,
     privateKey: process.env.FIREBASE_PRIVATE_KEY
-      ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
-      : "",
+      ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+      : '',
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
   }),
 });
@@ -31,45 +31,45 @@ export function handleError(error, req, res, next) {
 export const auth = async (req, res, next) => {
   if (
     req.headers.authorization &&
-    req.headers.authorization.split(" ")[0] === "Bearer"
+    req.headers.authorization.split(' ')[0] === 'Bearer'
   ) {
-    req.authToken = req.headers.authorization.split(" ")[1];
+    req.authToken = req.headers.authorization.split(' ')[1];
   } else {
     req.authToken = null;
   }
 
   if (!req.authToken) {
-    return next(createError(401, "Unauthorized"));
+    return next(createError(401, 'Unauthorized'));
   }
 
   const { authToken } = req;
   const userInfo = await admin.auth().verifyIdToken(authToken);
 
   if (!req.params.cookbook) {
-    return next(createError(401, "Unauthorized"));
+    return next(createError(401, 'Unauthorized'));
   }
 
   const cookbook = await CookbookModel.findById(req.params.cookbook);
 
-  if (cookbook && cookbook.roles && cookbook.roles[userInfo.uid] === "admin") {
+  if (cookbook && cookbook.roles && cookbook.roles[userInfo.uid] === 'admin') {
     return next();
   }
 
-  return next(createError(401, "Unauthorized"));
+  return next(createError(401, 'Unauthorized'));
 };
 
 export const superAuth = async (req, res, next) => {
   if (
     req.headers.authorization &&
-    req.headers.authorization.split(" ")[0] === "Bearer"
+    req.headers.authorization.split(' ')[0] === 'Bearer'
   ) {
-    req.authToken = req.headers.authorization.split(" ")[1];
+    req.authToken = req.headers.authorization.split(' ')[1];
   } else {
     req.authToken = null;
   }
 
   if (!req.authToken) {
-    return next(createError(401, "Unauthorized"));
+    return next(createError(401, 'Unauthorized'));
   }
   const { authToken } = req;
   const userInfo = await admin.auth().verifyIdToken(authToken);
@@ -79,7 +79,7 @@ export const superAuth = async (req, res, next) => {
     return next();
   }
 
-  return next(createError(401, "Unauthorized"));
+  return next(createError(401, 'Unauthorized'));
 };
 
 export const login = async (req, res, next) => {
@@ -87,11 +87,10 @@ export const login = async (req, res, next) => {
   const clientId = process.env.DISCORD_ID;
   const clientSecret = process.env.DISCORD_SECRET;
   const params = `client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&code=${code}&redirect_uri=${redirectUrl}&scope=identify email`;
-  const baseUrl = "https://discord.com/api";
+  const baseUrl = 'https://discord.com/api';
   const headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
+    'Content-Type': 'application/x-www-form-urlencoded',
   };
-  let user;
 
   // Get discord auth token
   const response = await axios.post(
@@ -99,7 +98,7 @@ export const login = async (req, res, next) => {
     encodeURI(params),
     {
       headers: headers,
-    }
+    },
   );
 
   // Get user with auth token
@@ -109,7 +108,7 @@ export const login = async (req, res, next) => {
     },
   });
 
-  user = newResponse.data;
+  const user = newResponse.data;
 
   const userProfile = {
     username: user.username,
@@ -134,15 +133,15 @@ export const login = async (req, res, next) => {
 export const getSessionCookie = async (req, res, next) => {
   if (
     req.headers.authorization &&
-    req.headers.authorization.split(" ")[0] === "Bearer"
+    req.headers.authorization.split(' ')[0] === 'Bearer'
   ) {
-    req.authToken = req.headers.authorization.split(" ")[1];
+    req.authToken = req.headers.authorization.split(' ')[1];
   } else {
     req.authToken = null;
   }
 
   if (!req.authToken) {
-    return next(createError(401, "Unauthorized"));
+    return next(createError(401, 'Unauthorized'));
   }
 
   const { authToken } = req;
@@ -157,17 +156,17 @@ export const getSessionCookie = async (req, res, next) => {
     maxAge: expiresIn,
     httpOnly: true,
     secure: true,
-    sameSite: "strict",
+    sameSite: 'strict',
   };
-  res.cookie("session", cookie, options);
-  return res.end(JSON.stringify({ status: "success" }));
+  res.cookie('session', cookie, options);
+  return res.end(JSON.stringify({ status: 'success' }));
 };
 
 export const loginWithCookie = async (req, res, next) => {
   let cookies = req.headers.cookie;
   if (cookies) {
-    cookies = cookies.split(";").reduce((obj, c) => {
-      var n = c.split("=");
+    cookies = cookies.split(';').reduce((obj, c) => {
+      const n = c.split('=');
       obj[n[0].trim()] = n[1].trim();
       return obj;
     }, {});
