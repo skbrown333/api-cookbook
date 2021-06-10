@@ -31,6 +31,7 @@
     "firebase-admin": "^9.9.0",
     "helmet": "^4.6.0",
     "http-errors": "^1.8.0",
+    "migrate-mongoose": "^4.0.0",
     "mongoose": "^5.12.11",
     "morgan": "^1.10.0",
     "winston": "^3.3.3"

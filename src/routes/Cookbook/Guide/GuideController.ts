@@ -19,7 +19,7 @@ class GuideController extends BaseController {
     const { cookbook } = req.params;
 
     if (!slug) {
-      return super.create(req, res, next);
+      return await super.create(req, res, next);
     }
 
     const guides = await GuideModel.find({cookbook, slug});
@@ -28,7 +28,7 @@ class GuideController extends BaseController {
       return next(createError(500, "Slug already exists"));
     }
 
-    super.create(req, res, next);
+    return await super.create(req, res, next);
   }
 
   async update(req, res, next) {
@@ -37,7 +37,7 @@ class GuideController extends BaseController {
     const { cookbook } = req.params;
 
     if (!slug) {
-      return super.update(req, res, next);
+      return await super.update(req, res, next);
     }
 
     const guides = await GuideModel.find({cookbook, slug});
@@ -46,7 +46,7 @@ class GuideController extends BaseController {
       return next(createError(500, "Slug already exists"));
     }
 
-    super.update(req, res, next);
+    return await super.update(req, res, next);
   }
 }
 
