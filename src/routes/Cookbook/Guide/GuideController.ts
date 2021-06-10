@@ -14,36 +14,34 @@ class GuideController extends BaseController {
   }
 
   async create(req, res, next) {
-
-    let {slug} = req.body;
+    const { slug } = req.body;
     const { cookbook } = req.params;
 
     if (!slug) {
       return await super.create(req, res, next);
     }
 
-    const guides = await GuideModel.find({cookbook, slug});
+    const guides = await GuideModel.find({ cookbook, slug });
 
     if (guides.length) {
-      return next(createError(500, "Slug already exists"));
+      return next(createError(500, 'Slug already exists'));
     }
 
     return await super.create(req, res, next);
   }
 
   async update(req, res, next) {
-
-    let {slug} = req.body;
+    const { slug } = req.body;
     const { cookbook } = req.params;
 
     if (!slug) {
       return await super.update(req, res, next);
     }
 
-    const guides = await GuideModel.find({cookbook, slug});
+    const guides = await GuideModel.find({ cookbook, slug });
 
     if (guides.length) {
-      return next(createError(500, "Slug already exists"));
+      return next(createError(500, 'Slug already exists'));
     }
 
     return await super.update(req, res, next);
