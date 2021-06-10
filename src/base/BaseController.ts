@@ -132,6 +132,7 @@ export default class BaseController {
 
     model = await this.model.findByIdAndUpdate(modelId, body, {
       new: true,
+      runValidators: true,
     });
 
     if (this.populateFields) {

@@ -11,7 +11,9 @@
     "prod": "yarn build && yarn start",
     "format": "prettier --write \"**/*.+(js|ts|json|yml|yaml)\"",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "migrate:up": "migrate-mongo up",
+    "migrate:down": "migrate-mongo down"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,7 @@
     "firebase-admin": "^9.9.0",
     "helmet": "^4.6.0",
     "http-errors": "^1.8.0",
+    "migrate-mongoose": "^4.0.0",
     "mongoose": "^5.12.11",
     "morgan": "^1.10.0",
     "winston": "^3.3.3"
