@@ -11,7 +11,9 @@
     "prod": "yarn build && yarn start",
     "format": "prettier --write \"**/*.+(js|ts|json|yml|yaml)\"",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "migrate:up": "migrate-mongo up",
+    "migrate:down": "migrate-mongo down"
   },
   "repository": {
     "type": "git",

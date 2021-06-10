@@ -4,11 +4,9 @@ const { GuideModel } = require('../dist/src/models/Guide/guide.model');
  */
 async function up() {
   // Write migration here
-  await this('guide').updateMany(
-    {},
-    { $set: { slug: '$_id' } },
-    { multi: true },
-  );
+  await this('guide').updateMany({}, [
+    { $set: { slug: { $toString: '$_id' } } },
+  ]);
 }
 
 /**
@@ -16,7 +14,7 @@ async function up() {
  */
 async function down() {
   // Write migration here
-  await this('guide').updateMany({}, { $unset: { slug: {} } }, { multi: true });
+  await this('guide').updateMany({}, { $unset: { slug: {} } });
 }
 
 module.exports = { up, down };
