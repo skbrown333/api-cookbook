@@ -12,8 +12,7 @@
     "format": "prettier --write \"**/*.+(js|ts|json|yml|yaml)\"",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "migrate:up": "migrate-mongo up",
-    "migrate:down": "migrate-mongo down"
+    "heroku-postbuild": "migrate-mongo up"
   },
   "repository": {
     "type": "git",
