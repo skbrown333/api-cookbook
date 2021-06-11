@@ -12,7 +12,7 @@
     "format": "prettier --write \"**/*.+(js|ts|json|yml|yaml)\"",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "heroku-postbuild": "tsc && ./node_modules/.bin/migrate up"
+    "heroku-postbuild": "tsc && ./node_modules/.bin/migrate up --autosync"
   },
   "repository": {
     "type": "git",
