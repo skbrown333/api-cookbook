@@ -1,8 +1,11 @@
 # api-cookbook
+
 API for cookbook.gg
 
 # Setting up .env
+
 You will need to create a .env file in the root of the project
+
 ```
 FIREBASE_PROJECT_ID = "DEV_FIREBASE_PROJECT_ID"
 FIREBASE_PRIVATE_KEY = "DEV_FIREBASE_PRIVATE_KEY"
@@ -20,7 +23,9 @@ MIGRATE_dbConnectionUri= "mongodb://localhost:27017/cookbook"
 You will need to include some seed data for your mongodb.
 
 ## Game
+
 insert into your local `games` collection
+
 ```javascript
 {
     "name" : "melee",
@@ -29,9 +34,11 @@ insert into your local `games` collection
 ```
 
 ## Character
-*this isnt being used yet*
 
-insert into your local `characters` collection 
+_this isnt being used yet_
+
+insert into your local `characters` collection
+
 ```javascript
 {
     "name" : "falcon",
@@ -41,10 +48,12 @@ insert into your local `characters` collection
 ```
 
 ## Cookbook
+
 insert into your local `cookbooks` collection
+
 ```javascript
 {
-    "streams" : [ 
+    "streams" : [
         TWITCH_STREAMERS
     ],
     "name" : "falcon",
