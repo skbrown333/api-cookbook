@@ -6,7 +6,7 @@ export interface IUser {
   discord_id: string;
   username: string;
   discriminator: string;
-  avatar: string;
+  avatar?: string;
   cookbook: Schema.Types.ObjectId;
   super_admin: boolean;
 }
