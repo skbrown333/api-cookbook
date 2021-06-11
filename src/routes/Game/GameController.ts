@@ -1,9 +1,9 @@
-import BaseController from "../../base/BaseController";
-import { GameModel } from "../../models/Game/game.model";
+import BaseController from '../../base/BaseController';
+import { GameModel } from '../../models/Game/game.model';
 
 class GameController extends BaseController {
   constructor() {
-    let model = GameModel;
+    const model = GameModel;
     super({ model });
   }
 }

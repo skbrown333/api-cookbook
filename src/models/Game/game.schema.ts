@@ -1,15 +1,15 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
-let schemaOptions = {
+const schemaOptions = {
   versionKey: false,
 };
 
-let GameSchema = new Schema(
+const GameSchema = new Schema(
   {
     name: { type: String, required: true },
     display_name: { type: String, required: true },
   },
-  schemaOptions
+  schemaOptions,
 );
 
 export default GameSchema;

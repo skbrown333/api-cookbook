@@ -1,4 +1,4 @@
-import { Document, Model, Schema } from "mongoose";
+import { Document, Model, Schema } from 'mongoose';
 
 export interface IGuide {
   cre_date: Date;
@@ -9,6 +9,7 @@ export interface IGuide {
   character: string;
   sections: any[];
   tags: Schema.Types.ObjectId[];
+  slug: string;
 }
 
 export interface IGuideDocument extends IGuide, Document {}

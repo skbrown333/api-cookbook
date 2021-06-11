@@ -1,20 +1,20 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
-let schemaOptions = {
+const schemaOptions = {
   versionKey: false,
 };
 
-let TagSchema = new Schema(
+const TagSchema = new Schema(
   {
     label: { type: String, required: true },
     color: { type: String, required: false },
     cookbook: {
       type: Schema.Types.ObjectId,
-      ref: "cookbook",
+      ref: 'cookbook',
       required: false,
     },
   },
-  schemaOptions
+  schemaOptions,
 );
 
 export default TagSchema;
