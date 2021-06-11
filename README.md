@@ -15,7 +15,7 @@ DISCORD_SECRET = "DISCORD_SECRET"
 PORT = "8080"
 CORS = "localhost"
 MONGO_URL = "mongodb://localhost:27017/cookbook"
-MIGRATE_dbConnectionUri= "mongodb://localhost:27017/cookbook"
+MIGRATE_dbConnectionUri = "mongodb://localhost:27017/cookbook"
 ```
 
 # Setting up Mongo
