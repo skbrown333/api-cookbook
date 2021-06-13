@@ -50,8 +50,13 @@ export const auth = async (req, res, next) => {
   }
 
   const cookbook = await CookbookModel.findById(req.params.cookbook);
+  const authRoles = ['admin', 'chef'];
 
-  if (cookbook && cookbook.roles && cookbook.roles[userInfo.uid] === 'admin') {
+  if (
+    cookbook &&
+    cookbook.roles &&
+    authRoles.includes(cookbook.roles[userInfo.uid])
+  ) {
     return next();
   }
 
