@@ -6,9 +6,9 @@ export interface IUser {
   discord_id: string;
   username: string;
   discriminator: string;
-  avatar: string;
-  cookbook: Schema.Types.ObjectId;
+  avatar?: string;
   super_admin: boolean;
+  links: string[];
 }
 
 export interface IUserDocument extends IUser, Document {}

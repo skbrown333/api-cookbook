@@ -50,8 +50,13 @@ export const auth = async (req, res, next) => {
   }
 
   const cookbook = await CookbookModel.findById(req.params.cookbook);
+  const authRoles = ['admin', 'chef'];
 
-  if (cookbook && cookbook.roles && cookbook.roles[userInfo.uid] === 'admin') {
+  if (
+    cookbook &&
+    cookbook.roles &&
+    authRoles.includes(cookbook.roles[userInfo.uid])
+  ) {
     return next();
   }
 
@@ -121,6 +126,12 @@ export const login = async (req, res, next) => {
   try {
     const userRecord = await admin.auth().getUserByEmail(user.email);
     const token = await admin.auth().createCustomToken(userRecord.uid);
+    const users = await UserModel.find({ uid: userRecord.uid });
+    if (!users[0]) {
+      await UserModel.create({ ...userProfile, ...{ uid: userRecord.uid } });
+    } else {
+      await UserModel.findOneAndUpdate({ uid: userRecord.uid }, userProfile);
+    }
     return res.status(200).send(token);
   } catch (err) {
     const userRecord = await admin.auth().createUser({ email: user.email });
