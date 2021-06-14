@@ -13,7 +13,7 @@ const UserSchema = new Schema(
     discriminator: { type: String, required: true },
     avatar: { type: String, required: false },
     super_admin: { type: Boolean, required: true, default: false },
-    links: { type: Array, required: true, default: [] },
+    links: { type: Object, required: true, default: {} },
   },
   schemaOptions,
 );
