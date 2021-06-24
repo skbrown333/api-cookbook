@@ -8,7 +8,7 @@ export interface IUser {
   discriminator: string;
   avatar?: string;
   super_admin: boolean;
-  links: Object;
+  links: any;
 }
 
 export interface IUserDocument extends IUser, Document {}

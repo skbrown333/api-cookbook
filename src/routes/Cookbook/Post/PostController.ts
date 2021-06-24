@@ -7,7 +7,7 @@ class PostController extends BaseController {
     const options: any = {
       model,
     };
-    options.populateFields = 'cre_account tags cookbook';
+    options.populateFields = 'cre_account tags cookbook character';
     options.routeSingular = 'post';
     super(options);
   }

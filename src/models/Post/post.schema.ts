@@ -16,7 +16,8 @@ const PostSchema = new Schema(
       required: false,
     },
     character: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'character',
       required: false,
     },
     tags: [
