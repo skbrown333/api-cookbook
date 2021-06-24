@@ -16,7 +16,8 @@ const GuideSchema = new Schema(
       required: true,
     },
     character: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'character',
       required: false,
     },
     sections: [{ type: Object, required: true, default: [] }],
