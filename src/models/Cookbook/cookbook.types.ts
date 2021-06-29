@@ -2,7 +2,6 @@ import { Document, Model, Schema } from 'mongoose';
 
 export interface ICookbook {
   cre_date: Date;
-  subdomain: string;
   name: string;
   character: Schema.Types.ObjectId;
   game: Schema.Types.ObjectId;
