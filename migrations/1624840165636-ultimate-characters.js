@@ -95,7 +95,10 @@ async function up() {
   const gameId = gameRes[0]._id;
   for (let i = 0; i < CHARACTERS.length; i++) {
     const char = CHARACTERS[i];
-    const character_ref = await this('character').find({ name: char[0] });
+    const character_ref = await this('character').find({
+      name: char[0],
+      game: gameId,
+    });
     if (character_ref.length < 1) {
       await this('character').create({
         name: char[0],
