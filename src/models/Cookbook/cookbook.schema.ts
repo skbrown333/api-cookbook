@@ -21,6 +21,8 @@ const CookbookSchema = new Schema(
     streams: [{ type: String, required: true, default: [] }],
     roles: { type: Object, required: true, default: {} },
     donation_url: { type: String, required: false },
+    preview: { type: Boolean, required: false, default: true },
+    show_authors: { type: Boolean, required: false, default: true },
   },
   schemaOptions,
 );
