@@ -44,9 +44,13 @@ export const auth = async (req, res, next) => {
 
   const { authToken } = req;
   const userInfo = await admin.auth().verifyIdToken(authToken);
+  const users = await UserModel.find({ uid: userInfo.uid });
 
   if (!req.params.cookbook) {
     return next(createError(401, 'Unauthorized'));
+  }
+  if (users && users.length && users[0].super_admin) {
+    return next();
   }
 
   const cookbook = await CookbookModel.findById(req.params.cookbook);
