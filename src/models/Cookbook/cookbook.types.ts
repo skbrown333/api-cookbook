@@ -8,6 +8,8 @@ export interface ICookbook {
   streams: string[];
   roles: any;
   donation_url?: string;
+  preview?: boolean;
+  show_authors?: boolean;
 }
 
 export interface ICookbookDocument extends ICookbook, Document {}
