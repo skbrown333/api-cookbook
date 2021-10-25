@@ -172,7 +172,7 @@ export const getSessionCookie = async (req, res, next) => {
     httpOnly: true,
     secure: true,
     sameSite: 'strict',
-    domain: '.cookbook.gg',
+    domain: `.${process.env.CORS}`,
   };
   res.cookie('session', cookie, options);
   return res.end(JSON.stringify({ status: 'success' }));

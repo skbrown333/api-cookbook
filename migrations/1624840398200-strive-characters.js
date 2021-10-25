@@ -23,8 +23,12 @@ async function up() {
     ['zato', 'Zato'],
   ];
   // Write migration here
-  const gameRes = await this('game').find({ name: 'strive' });
-  const gameId = gameRes[0]._id;
+  const gameRes = await this('game').find({
+    name: 'strive',
+    display_name: 'Guilty Gear Strive',
+    subdomain: 'strive',
+  });
+  const gameId = gameRes && gameRes.length ? gameRes[0]._id : gameRes._id;
   for (let i = 0; i < CHARACTERS.length; i++) {
     const char = CHARACTERS[i];
     const character_ref = await this('character').find({ name: char[0] });

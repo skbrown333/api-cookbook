@@ -91,8 +91,15 @@ async function up() {
     ['zero_suit_samus', 'Zero Suit Samus'],
   ];
   // Write migration here
-  const gameRes = await this('game').find({ name: 'ultimate' });
-  const gameId = gameRes[0]._id;
+  let gameRes = await this('game').find({ name: 'ultimate' });
+  if (!gameRes || gameRes.length) {
+    gameRes = await this('game').create({
+      name: 'ultimate',
+      display_name: 'Super Smash Bros. Ultimate',
+      subdomain: 'ultimate',
+    });
+  }
+  const gameId = gameRes && gameRes.length ? gameRes[0]._id : gameRes._id;
   for (let i = 0; i < CHARACTERS.length; i++) {
     const char = CHARACTERS[i];
     const character_ref = await this('character').find({
