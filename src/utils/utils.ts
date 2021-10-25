@@ -171,7 +171,7 @@ export const getSessionCookie = async (req, res, next) => {
     maxAge: expiresIn,
     httpOnly: true,
     secure: true,
-    sameSite: 'strict',
+    sameSite: 'none',
     domain: `.dev-cookbook.com`,
   };
   res.cookie('session', cookie, options);
