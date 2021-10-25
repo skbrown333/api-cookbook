@@ -171,8 +171,8 @@ export const getSessionCookie = async (req, res, next) => {
     maxAge: expiresIn,
     httpOnly: true,
     secure: true,
-    sameSite: 'none',
-    domain: `dev-cookbook.com`,
+    sameSite: true,
+    domain: `.dev-cookbook.com`,
   };
   console.log('here');
   res.cookie('session', cookie, options);
@@ -187,6 +187,8 @@ export const loginWithCookie = async (req, res, next) => {
       obj[n[0].trim()] = n[1].trim();
       return obj;
     }, {});
+  } else {
+    return next(createError(401, 'Unauthorized'));
   }
 
   const userRecord = await admin.auth().verifySessionCookie(cookies.session);
