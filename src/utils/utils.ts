@@ -172,7 +172,7 @@ export const getSessionCookie = async (req, res, next) => {
     httpOnly: true,
     secure: true,
     sameSite: true,
-    domain: `.cookbook.com`,
+    domain: `.cookbook.gg`,
   };
   console.log('here');
   res.cookie('session', cookie, options);
