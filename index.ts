@@ -28,7 +28,7 @@ mongoose.connection.on('error', (err) => {
   log.error('Mongoose Default Connection Error : ' + err);
 });
 
-cron.schedule('*/1 * * * *', updateUsers);
+cron.schedule('* */8 * * *', updateUsers);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
