@@ -174,6 +174,7 @@ export const getSessionCookie = async (req, res, next) => {
     sameSite: 'strict',
     domain: '.cookbook.gg',
   };
+  console.log('here');
   res.cookie('session', cookie, options);
   return res.end(JSON.stringify({ status: 'success' }));
 };
@@ -186,10 +187,48 @@ export const loginWithCookie = async (req, res, next) => {
       obj[n[0].trim()] = n[1].trim();
       return obj;
     }, {});
+  } else {
+    return next(createError(401, 'Unauthorized'));
   }
 
   const userRecord = await admin.auth().verifySessionCookie(cookies.session);
   return res
     .status(200)
     .send(await admin.auth().createCustomToken(userRecord.uid));
+};
+
+export const updateUsers = async () => {
+  const baseUrl = 'https://discord.com/api';
+
+  // Get discord auth token
+  try {
+    const users = await UserModel.find({});
+
+    for (let i = 0; i < users.length; i++) {
+      try {
+        const user = users[i];
+        // Get user with auth token
+        const newResponse = await axios.get(
+          `${baseUrl}/users/${user.discord_id}`,
+          {
+            headers: {
+              Authorization: `Bot ${process.env.BOT_TOKEN}`,
+            },
+          },
+        );
+
+        const discordUser = newResponse.data;
+        const userProfile = {
+          username: discordUser.username,
+          discriminator: discordUser.discriminator,
+          avatar: discordUser.avatar,
+        };
+        await UserModel.findOneAndUpdate({ _id: user._id }, userProfile);
+      } catch (err) {
+        console.log('err: ', err);
+      }
+    }
+  } catch (err) {
+    console.log('err: ', err);
+  }
 };

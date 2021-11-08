@@ -37,8 +37,16 @@ async function up() {
     ['sandbag', 'sandbag'],
   ];
   // Write migration here
-  const gameRes = await this('game').find({ name: 'melee' });
-  const gameId = gameRes[0]._id;
+  let gameRes = await this('game').find({ name: 'melee' });
+  if (!gameRes && !gameRes.length) {
+    await this('game').create({
+      name: 'melee',
+      display_name: 'Super Smash Bros. Melee',
+      subdomain: 'melee',
+    });
+    gameRes = await this('game').find({ name: 'melee' });
+  }
+  const gameId = gameRes && gameRes.length ? gameRes[0]._id : gameRes._id;
   for (let i = 0; i < CHARACTERS.length; i++) {
     const char = CHARACTERS[i];
     const character_ref = await this('character').find({ name: char[0] });

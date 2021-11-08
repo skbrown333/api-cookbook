@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
 import createError from 'http-errors';
+import cron from 'node-cron';
 
 const app = express();
 
@@ -13,6 +14,7 @@ import { logger as log } from './src/utils/logging';
 import routes from './src/routes/index';
 
 import { ENV } from './src/constants/constants';
+import { updateUsers } from './src/utils/utils';
 
 mongoose.connect(ENV.db_url);
 
@@ -26,20 +28,33 @@ mongoose.connection.on('error', (err) => {
   log.error('Mongoose Default Connection Error : ' + err);
 });
 
+cron.schedule('*/1 * * * *', updateUsers);
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   log.info(`Server running on port ${port}`);
 });
 
 app.use(helmet());
+const allowedOrigins = [
+  'cookbook-gg.vercel.app',
+  ...(process.env.CORS ? [process.env.CORS] : []),
+];
 const corsOptions = {
   credentials: true,
   origin: function (origin, callback) {
-    if (origin && process.env.CORS && origin.indexOf(process.env.CORS) !== -1) {
-      callback(null, true);
-    } else {
-      callback(createError(500, 'Blocked by CORS'));
+    if (!origin) {
+      return callback(createError(500, 'Blocked by CORS'));
     }
+
+    for (let i = 0; i < allowedOrigins.length; i++) {
+      const allowedOrigin = allowedOrigins[i];
+      if (origin.indexOf(allowedOrigin)) {
+        return callback(null, true);
+      }
+    }
+
+    callback(createError(500, 'Blocked by CORS'));
   },
 };
 app.use(cors(corsOptions));
