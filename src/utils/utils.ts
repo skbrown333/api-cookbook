@@ -196,3 +196,39 @@ export const loginWithCookie = async (req, res, next) => {
     .status(200)
     .send(await admin.auth().createCustomToken(userRecord.uid));
 };
+
+export const updateUsers = async () => {
+  const baseUrl = 'https://discord.com/api';
+
+  // Get discord auth token
+  try {
+    const users = await UserModel.find({});
+
+    for (let i = 0; i < users.length; i++) {
+      try {
+        const user = users[i];
+        // Get user with auth token
+        const newResponse = await axios.get(
+          `${baseUrl}/users/${user.discord_id}`,
+          {
+            headers: {
+              Authorization: `Bot ${process.env.BOT_TOKEN}`,
+            },
+          },
+        );
+
+        const discordUser = newResponse.data;
+        const userProfile = {
+          username: discordUser.username,
+          discriminator: discordUser.discriminator,
+          avatar: discordUser.avatar,
+        };
+        await UserModel.findOneAndUpdate({ _id: user._id }, userProfile);
+      } catch (err) {
+        console.log('err: ', err);
+      }
+    }
+  } catch (err) {
+    console.log('err: ', err);
+  }
+};

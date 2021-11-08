@@ -38,6 +38,7 @@
     "migrate-mongoose": "^4.0.0",
     "mongoose": "^5.12.11",
     "morgan": "^1.10.0",
+    "node-cron": "^3.0.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
