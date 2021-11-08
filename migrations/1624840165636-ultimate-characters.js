@@ -98,6 +98,7 @@ async function up() {
       display_name: 'Super Smash Bros. Ultimate',
       subdomain: 'ultimate',
     });
+    gameRes = await this('game').find({ name: 'ultimate' });
   }
   const gameId = gameRes && gameRes.length ? gameRes[0]._id : gameRes._id;
   for (let i = 0; i < CHARACTERS.length; i++) {

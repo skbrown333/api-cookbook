@@ -39,11 +39,12 @@ async function up() {
   // Write migration here
   let gameRes = await this('game').find({ name: 'melee' });
   if (!gameRes && !gameRes.length) {
-    gameRes = await this('game').create({
+    await this('game').create({
       name: 'melee',
       display_name: 'Super Smash Bros. Melee',
       subdomain: 'melee',
     });
+    gameRes = await this('game').find({ name: 'melee' });
   }
   const gameId = gameRes && gameRes.length ? gameRes[0]._id : gameRes._id;
   for (let i = 0; i < CHARACTERS.length; i++) {
