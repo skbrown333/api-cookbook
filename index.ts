@@ -38,6 +38,7 @@ app.listen(port, () => {
 app.use(helmet());
 const allowedOrigins = [
   'localhost',
+  'dev-coobook.com',
   'cookbook-gg.vercel.app',
   ...(process.env.CORS ? [process.env.CORS] : []),
 ];

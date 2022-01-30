@@ -10,6 +10,8 @@ export interface ICookbook {
   donation_url?: string;
   preview?: boolean;
   show_authors?: boolean;
+  guide?: Schema.Types.ObjectId[];
+  banner_url?: string;
 }
 
 export interface ICookbookDocument extends ICookbook, Document {}

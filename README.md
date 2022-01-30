@@ -33,20 +33,6 @@ insert into your local `games` collection
 }
 ```
 
-## Character
-
-_this isnt being used yet_
-
-insert into your local `characters` collection
-
-```javascript
-{
-    "name" : "falcon",
-    "display_name" : "Captain Falcon",
-    "game" : ObjectId(GAME_OBJECT_ID)
-}
-```
-
 ## Cookbook
 
 insert into your local `cookbooks` collection
@@ -57,9 +43,8 @@ insert into your local `cookbooks` collection
         TWITCH_STREAMERS
     ],
     "name" : "falcon",
-    "subdomain" : "falcon",
     "game" : ObjectId(GAME_OBJECT_ID),
-    "character" : "falcon",
+    "character" : ObjectId(CHARACTER_OBJECT_ID),
     "roles" : {
         YOUR_FIREBASE_UID : "admin"
     }
