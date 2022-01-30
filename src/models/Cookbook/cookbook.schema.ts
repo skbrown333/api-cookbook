@@ -23,6 +23,15 @@ const CookbookSchema = new Schema(
     donation_url: { type: String, required: false },
     preview: { type: Boolean, required: false, default: true },
     show_authors: { type: Boolean, required: false, default: true },
+    guides: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'guide',
+        required: true,
+        default: [],
+      },
+    ],
+    banner_url: { type: String, required: false },
   },
   schemaOptions,
 );
