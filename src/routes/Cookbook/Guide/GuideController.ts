@@ -1,6 +1,7 @@
 import BaseController from '../../../base/BaseController';
 import { GuideModel } from '../../../models/Guide/guide.model';
 import createError from 'http-errors';
+import { CookbookModel } from '../../../models/Cookbook/cookbook.model';
 
 class GuideController extends BaseController {
   constructor() {
@@ -27,7 +28,24 @@ class GuideController extends BaseController {
       return next(createError(500, 'Slug already exists'));
     }
 
-    return await super.create(req, res, next);
+    const body = req.body;
+    const params = {
+      ...body,
+      ...(cookbook ? { cookbook: cookbook } : {}),
+    };
+    let model = await this.model.create(params);
+
+    if (this.populateFields) {
+      model = await model.populate(this.populateFields).execPopulate();
+    }
+
+    const cookbooks = await CookbookModel.find({ _id: cookbook });
+    if (cookbooks[0]) {
+      cookbooks[0].guides = [...[cookbooks[0].guides], ...[model._id]];
+      cookbooks[0].save();
+    }
+
+    return res.status(200).json(model);
   }
 
   async update(req, res, next) {
