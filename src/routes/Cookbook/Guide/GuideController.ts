@@ -40,9 +40,10 @@ class GuideController extends BaseController {
     }
 
     const cookbooks = await CookbookModel.find({ _id: cookbook });
+    console.log('cookbooks: ', cookbooks);
     if (cookbooks[0]) {
       cookbooks[0].guides = [...[cookbooks[0].guides], ...[model._id]];
-      cookbooks[0].save();
+      await cookbooks[0].save();
     }
 
     return res.status(200).json(model);
