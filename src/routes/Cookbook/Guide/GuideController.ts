@@ -19,7 +19,7 @@ class GuideController extends BaseController {
     const { cookbook } = req.params;
 
     if (!slug) {
-      return await super.create(req, res, next);
+      return await this.createAndUpdateCookbook(req, res, next);
     }
 
     const guides = await GuideModel.find({ cookbook, slug });
@@ -28,22 +28,27 @@ class GuideController extends BaseController {
       return next(createError(500, 'Slug already exists'));
     }
 
+    return await this.createAndUpdateCookbook(req, res, next);
+  }
+
+  async createAndUpdateCookbook(req, res, next) {
     const body = req.body;
+    const { cookbook } = req.params;
     const params = {
       ...body,
       ...(cookbook ? { cookbook: cookbook } : {}),
     };
+
     let model = await this.model.create(params);
-
-    if (this.populateFields) {
-      model = await model.populate(this.populateFields).execPopulate();
-    }
-
     const cookbooks = await CookbookModel.find({ _id: cookbook });
-    console.log('cookbooks: ', cookbooks);
+
     if (cookbooks[0]) {
       cookbooks[0].guides = [...[cookbooks[0].guides], ...[model._id]];
       await cookbooks[0].save();
+    }
+
+    if (this.populateFields) {
+      model = await model.populate(this.populateFields).execPopulate();
     }
 
     return res.status(200).json(model);
