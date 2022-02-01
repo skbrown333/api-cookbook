@@ -174,7 +174,6 @@ export const getSessionCookie = async (req, res, next) => {
     sameSite: 'strict',
     domain: '.cookbook.gg',
   };
-  console.log('here');
   res.cookie('session', cookie, options);
   return res.end(JSON.stringify({ status: 'success' }));
 };
