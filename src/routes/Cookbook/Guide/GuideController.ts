@@ -57,7 +57,7 @@ class GuideController extends BaseController {
   async deleteAndUpdateCookbook(req, res, next) {
     const { cookbook, guide } = req.params;
 
-    await this.model.findByIdAndDelete(guide);
+    await GuideModel.findByIdAndDelete(guide);
     const cookbooks = await CookbookModel.find({ _id: cookbook });
 
     if (cookbooks[0]) {
