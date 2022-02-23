@@ -54,6 +54,24 @@ class GuideController extends BaseController {
     return res.status(200).json(model);
   }
 
+  async deleteAndUpdateCookbook(req, res, next) {
+    const { cookbook, guide } = req.params;
+    const cookbooks = await CookbookModel.find({ _id: cookbook });
+
+    if (cookbooks[0]) {
+      const index = cookbooks[0].guides?.findIndex(
+        (guideId) => guideId.toString() === guide.toString(),
+      );
+      if (index != null && index > -1) {
+        cookbooks[0].guides?.splice(index, 1);
+        await cookbooks[0].save();
+        await GuideModel.findByIdAndDelete(guide);
+      }
+    }
+
+    return res.status(200).send();
+  }
+
   async update(req, res, next) {
     const { slug } = req.body;
     const { cookbook } = req.params;
