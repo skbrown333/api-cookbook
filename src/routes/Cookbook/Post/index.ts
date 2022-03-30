@@ -9,6 +9,7 @@ const router = express.Router({ mergeParams: true });
 router.get('', wrapAsync(PostController.get));
 router.get('/:post', wrapAsync(PostController.getById));
 router.patch('/:post', wrapAsync(auth), wrapAsync(PostController.update));
+router.patch('/:post/like', wrapAsync(PostController.like));
 router.delete('/:post', wrapAsync(auth), wrapAsync(PostController.delete));
 router.post('', wrapAsync(auth), wrapAsync(PostController.create));
 

@@ -23,6 +23,7 @@ const PostSchema = new Schema(
     tags: [
       { type: Schema.Types.ObjectId, ref: 'tag', required: true, default: [] },
     ],
+    likes: { type: Number, required: true, default: 0 },
   },
   schemaOptions,
 );

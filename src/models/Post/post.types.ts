@@ -8,6 +8,7 @@ export interface IPost {
   cookbook: string;
   character?: Schema.Types.ObjectId;
   tags: Schema.Types.ObjectId[];
+  likes: number;
 }
 
 export interface IPostDocument extends IPost, Document {}
