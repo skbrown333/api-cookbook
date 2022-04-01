@@ -46,7 +46,7 @@ const corsOptions = {
   origin: function (origin, callback) {
     console.log('origin: ', origin);
     if (!origin) {
-      return callback(createError(500, 'Blocked by CORS'));
+      return callback(null, true);
     }
 
     for (let i = 0; i < allowedOrigins.length; i++) {
