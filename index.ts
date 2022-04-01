@@ -37,7 +37,7 @@ app.listen(port, () => {
 
 app.use(helmet());
 const allowedOrigins = [
-  'localhost',
+  '*',
   'dev-coobook.com',
   'cookbook-gg.vercel.app',
   ...(process.env.CORS ? [process.env.CORS] : []),
@@ -45,6 +45,7 @@ const allowedOrigins = [
 const corsOptions = {
   credentials: true,
   origin: function (origin, callback) {
+    console.log('origin: ', origin);
     if (!origin) {
       return callback(createError(500, 'Blocked by CORS'));
     }
@@ -55,6 +56,7 @@ const corsOptions = {
         return callback(null, true);
       }
     }
+    return callback(null, true);
 
     callback(createError(500, 'Blocked by CORS'));
   },
