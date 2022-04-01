@@ -87,13 +87,14 @@ class PostController extends BaseController {
       try {
         if (!post) return;
 
-        //@ts-ignore
-        client.channels.cache
-          .find((i: any) => i.name === 'cookbook')
-          //@ts-ignore
-          ?.send({
-            embeds: [postEmbed(post)],
-          });
+        const channels = client.channels.cache;
+        channels.forEach((channel: any) => {
+          if (channel.name === 'cookbook') {
+            channel.send({
+              embeds: [postEmbed(post)],
+            });
+          }
+        });
       } catch (e) {
         console.log(e);
       }
