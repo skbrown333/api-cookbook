@@ -1,7 +1,9 @@
+import { Client, Intents } from 'discord.js';
 import createError from 'http-errors';
 import BaseController from '../../../base/BaseController';
 import { LikeModel } from '../../../models/Like/like.model';
 import { PostModel } from '../../../models/Post/post.model';
+import { postEmbed } from '../../../utils/utils';
 
 class PostController extends BaseController {
   constructor() {
@@ -63,6 +65,44 @@ class PostController extends BaseController {
     }
 
     return res.status(200).json(model);
+  }
+
+  async create(req, res, next) {
+    const client = new Client({
+      intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+    });
+
+    const body = req.body;
+    const { cookbook } = req.params;
+    const params = {
+      ...body,
+      ...(cookbook ? { cookbook: cookbook } : {}),
+    };
+    let post = await this.model.create(params);
+    if (this.populateFields) {
+      post = await post.populate(this.populateFields).execPopulate();
+    }
+
+    client.once('ready', () => {
+      try {
+        if (!post) return;
+
+        //@ts-ignore
+        client.channels.cache
+          .find((i: any) => i.name === 'cookbook')
+          //@ts-ignore
+          ?.send({
+            embeds: [postEmbed(post)],
+          });
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    // Login to Discord with your client's token
+    client.login(process.env.DISCORD_BOT_TOKEN);
+
+    return res.status(200).json(post);
   }
 }
 

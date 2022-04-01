@@ -14,8 +14,8 @@ import { logger as log } from './src/utils/logging';
 import routes from './src/routes/index';
 
 import { ENV } from './src/constants/constants';
-import { updateUsers } from './src/utils/utils';
-import { Client, Intents, MessageEmbed } from 'discord.js';
+import { postEmbed, updateUsers } from './src/utils/utils';
+import { Client, Intents } from 'discord.js';
 import { PostModel } from './src/models/Post/post.model';
 
 mongoose.connect(ENV.db_url);
@@ -98,73 +98,10 @@ client.on('messageCreate', async (message) => {
         'cre_account tags cookbook character',
       );
       if (!post) return;
-      const gfyTransform = (url) => {
-        const urlObject = { thumbnail: url, giant: url, gif: url };
-        const [thumb, size, mobile, mp4, giant] = [
-          'thumbs.',
-          '-size_restricted.gif',
-          '-mobile.mp4',
-          '.mp4',
-          'giant.',
-        ];
 
-        if (url.includes(thumb)) {
-          urlObject.giant = url.replace(thumb, giant);
-        }
-
-        if (url.includes(size)) {
-          urlObject.thumbnail = urlObject.thumbnail.replace(size, mobile);
-          urlObject.giant = urlObject.giant.replace(size, mp4);
-        }
-
-        if (url.includes(mp4) && !url.includes(mobile)) {
-          urlObject.thumbnail = urlObject.thumbnail.replace(mp4, mobile);
-          urlObject.gif = urlObject.gif.replace(mp4, size);
-        } else if (url.includes(mobile)) {
-          urlObject.giant = urlObject.giant.replace(mobile, mp4);
-          urlObject.gif = urlObject.gif.replace(mobile, size);
-        }
-
-        if (url.includes(giant)) {
-          urlObject.thumbnail = url.replace(giant, thumb);
-          urlObject.gif = urlObject.gif.replace(giant, thumb);
-        }
-
-        return urlObject;
-      };
-      const parseBody = (string) => {
-        const matches = string.match(/(gif:)\S*/g);
-        const { gif } = gfyTransform(matches[0].replace(/(gif:)/, ''));
-        return {
-          gifs: gif,
-          body: string.replace(/(gif:)|(vid:)|(loop:)|(tweet:)/g, ''),
-        };
-      };
-      const { gifs, body } = parseBody(post.body);
-      const exampleEmbed = new MessageEmbed()
-        .setColor('#09d3ac')
-        .setTitle(post.title)
-        .setURL(
-          //@ts-ignore
-          `https://melee.cookbook.gg/${encodeURI(post.cookbook.name)}/posts/${
-            post._id
-          }`,
-        )
-        .setAuthor({
-          //@ts-ignore
-          name: `${post.cre_account.username}#${post.cre_account.discriminator}`,
-          //@ts-ignore
-          iconURL: `https://cdn.discordapp.com/avatars/${post.cre_account.discord_id}/${post.cre_account.avatar}.png`,
-        })
-        .setDescription(body)
-        .setImage(gifs)
-        .setFooter({
-          //@ts-ignore
-          text: post.tags.map((tag) => `#${tag.label}`).join(' '),
-        });
       message.delete();
       message.channel.send({
-        embeds: [exampleEmbed],
+        embeds: [postEmbed(post)],
       });
     } catch (e) {
       console.log(e);
