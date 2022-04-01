@@ -11,10 +11,12 @@ import { default as CookbookRouter } from './Cookbook';
 import { default as CharacterRouter } from './Character';
 import { default as GameRouter } from './Game';
 import { default as UserRouter } from './User';
+import PostController from './Cookbook/Post/PostController';
 
 const router = express.Router();
 
 router.use('/cookbooks', CookbookRouter);
+router.get('/posts/:post', wrapAsync(PostController.getById));
 router.use('/characters', CharacterRouter);
 router.use('/games', GameRouter);
 router.use('/users', UserRouter);
