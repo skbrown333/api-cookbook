@@ -23,7 +23,7 @@ export const PostCommand = {
       const guilds = await GuildModel.find({ guild: guildId });
       let guild: any = guilds[0] || null;
 
-      let posts = await PostModel.find().populate('tags');
+      let posts = await PostModel.find().populate('tags cre_account');
       posts = posts.filter((post) => {
         const cookbookCheck =
           !guild ||
