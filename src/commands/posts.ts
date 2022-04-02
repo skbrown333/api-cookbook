@@ -32,7 +32,9 @@ export const PostCommand = {
         const tagCheck =
           !tags ||
           tags.length < 1 ||
-          tags.every((r) => post.tags.map((t: any) => t.label).includes(r));
+          tags.every((r) =>
+            post.tags.map((t: any) => t.label.replace(/\s/g, '')).includes(r),
+          );
         return cookbookCheck && tagCheck;
       });
       const post = posts[Math.floor(Math.random() * posts.length)];
