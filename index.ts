@@ -22,6 +22,7 @@ import { Routes } from 'discord-api-types/rest/v9';
 import { REST } from '@discordjs/rest';
 import { CookbookCommand } from './src/commands/cookbook';
 import { CookbookModel } from './src/models/Cookbook/cookbook.model';
+import { PostCommand } from './src/commands/posts';
 
 mongoose.connect(ENV.db_url);
 
@@ -99,6 +100,9 @@ async function initCommands() {
     const cookbookCommand = CookbookCommand(cookbooks);
     commands.push(cookbookCommand.data.toJSON());
     client.commands.set(cookbookCommand.data.name, cookbookCommand);
+    const postCommand = PostCommand;
+    commands.push(postCommand.data.toJSON());
+    client.commands.set(postCommand.data.name, postCommand);
   } catch (err) {
     console.log('err: ', err);
   }

@@ -291,8 +291,8 @@ export const postEmbed = (post: any) => {
       }`,
     )
     .setAuthor({
-      name: `${post.cre_account.username}#${post.cre_account.discriminator}`,
-      iconURL: `https://cdn.discordapp.com/avatars/${post.cre_account.discord_id}/${post.cre_account.avatar}.png`,
+      name: `${post.cre_account?.username}`,
+      iconURL: `https://cdn.discordapp.com/avatars/${post.cre_account?.discord_id}/${post.cre_account?.avatar}.png`,
     })
     .setDescription(body)
     .setImage(gifs)
