@@ -270,7 +270,7 @@ export const gfyTransform = (url) => {
 
 export const parseBody = (string) => {
   const matches = string.match(/(gif:)\S*/g);
-  const { gif } = gfyTransform(matches[0].replace(/(gif:)/, ''));
+  const { gif } = gfyTransform(matches[0].split(',')[0].replace(/(gif:)/, ''));
   return {
     gifs: gif,
     body: string.replace(/(gif:)|(vid:)|(loop:)|(tweet:)/g, ''),
@@ -296,4 +296,22 @@ export const postEmbed = (post: any) => {
     .setFooter({
       text: post.tags.map((tag) => `#${tag.label}`).join(' '),
     });
+};
+
+export const guideEmbed = (guide: any, section: any) => {
+  const { gifs, body } = parseBody(section.body);
+  return new MessageEmbed()
+    .setColor('#09d3ac')
+    .setTitle(section.title)
+    .setURL(
+      `https://melee.cookbook.gg/${encodeURI(guide.cookbook.name)}/recipes/${
+        guide._id
+      }/section/${encodeURIComponent(section.title)}`,
+    )
+    .setAuthor({
+      name: `${guide.cookbook.name} - ${guide.title}`,
+      url: `https://melee.cookbook.gg/${encodeURI(guide.cookbook.name)}`,
+    })
+    .setDescription(body.substr(0, 1000) + '\u2026')
+    .setImage(gifs);
 };

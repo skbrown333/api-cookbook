@@ -14,9 +14,10 @@ import { logger as log } from './src/utils/logging';
 import routes from './src/routes/index';
 
 import { ENV } from './src/constants/constants';
-import { postEmbed, updateUsers } from './src/utils/utils';
+import { guideEmbed, postEmbed, updateUsers } from './src/utils/utils';
 import { Client, Intents } from 'discord.js';
 import { PostModel } from './src/models/Post/post.model';
+import { GuideModel } from './src/models/Guide/guide.model';
 
 mongoose.connect(ENV.db_url);
 
@@ -102,6 +103,33 @@ client.on('messageCreate', async (message) => {
       message.delete();
       message.channel.send({
         embeds: [postEmbed(post)],
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  if (
+    message.content.match(
+      /(?=https:\/\/)(?=.*cookbook.gg)(?=.*\/section)\S*/g,
+    ) &&
+    message.author !== client.user
+  ) {
+    const guideId = message.content.match(/(?<=\/recipes\/)(\S[^\/]*)/g)?.[0];
+    const sectionName = message.content.match(/(?<=\/section\/)(\S*)/g)?.[0];
+    try {
+      const guide = await GuideModel.findById(guideId).populate(
+        'tags cookbook character',
+      );
+      if (!guide || !guide.sections || !sectionName) return;
+
+      const section = guide.sections.find(
+        (section) => `${section.title}` === decodeURIComponent(sectionName),
+      );
+
+      message.delete();
+      message.channel.send({
+        embeds: [guideEmbed(guide, section)],
       });
     } catch (e) {
       console.log(e);
