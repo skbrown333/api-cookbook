@@ -15,9 +15,13 @@ import routes from './src/routes/index';
 
 import { ENV } from './src/constants/constants';
 import { guideEmbed, postEmbed, updateUsers } from './src/utils/utils';
-import { Client, Intents } from 'discord.js';
+import { Client, Collection, Intents } from 'discord.js';
 import { PostModel } from './src/models/Post/post.model';
 import { GuideModel } from './src/models/Guide/guide.model';
+import { Routes } from 'discord-api-types/rest/v9';
+import { REST } from '@discordjs/rest';
+import { CookbookCommand } from './src/commands/cookbook';
+import { CookbookModel } from './src/models/Cookbook/cookbook.model';
 
 mongoose.connect(ENV.db_url);
 
@@ -80,62 +84,124 @@ app.use(express.json());
 app.use('/', routes);
 
 // Create a new client instance
-const client = new Client({
+const client: any = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
 });
 
-client.once('ready', () => {
-  console.log('Ready?');
-});
+const commands: any = [];
 
-client.on('messageCreate', async (message) => {
-  if (
-    message.content.match(/(?=https:\/\/)(?=.*cookbook.gg)(?=.*\/posts)\S*/g) &&
-    message.author !== client.user
-  ) {
-    const postId = message.content.match(/(?<=\/posts\/)(\S*)/g);
-    try {
-      const post = await PostModel.findById(postId).populate(
-        'cre_account tags cookbook character',
-      );
-      if (!post) return;
+// Creating a collection for commands in client
+client.commands = new Collection();
 
-      message.delete();
-      message.channel.send({
-        embeds: [postEmbed(post)],
-      });
-    } catch (e) {
-      console.log(e);
-    }
+async function initCommands() {
+  try {
+    const cookbooks = await CookbookModel.find();
+    const cookbookCommand = CookbookCommand(cookbooks);
+    commands.push(cookbookCommand.data.toJSON());
+    client.commands.set(cookbookCommand.data.name, cookbookCommand);
+  } catch (err) {
+    console.log('err: ', err);
   }
+}
 
-  if (
-    message.content.match(
-      /(?=https:\/\/)(?=.*cookbook.gg)(?=.*\/section)\S*/g,
-    ) &&
-    message.author !== client.user
-  ) {
-    const guideId = message.content.match(/(?<=\/recipes\/)(\S[^\/]*)/g)?.[0];
-    const sectionName = message.content.match(/(?<=\/section\/)(\S*)/g)?.[0];
-    try {
-      const guide = await GuideModel.findById(guideId).populate(
-        'tags cookbook character',
-      );
-      if (!guide || !guide.sections || !sectionName) return;
+async function initBot() {
+  await initCommands();
 
-      const section = guide.sections.find(
-        (section) => `${section.title}` === decodeURIComponent(sectionName),
-      );
+  client.once('ready', () => {
+    console.log('Ready?');
 
-      message.delete();
-      message.channel.send({
-        embeds: [guideEmbed(guide, section)],
-      });
-    } catch (e) {
-      console.log(e);
+    const CLIENT_ID = client.user.id || '';
+    const rest = new REST({
+      version: '9',
+    }).setToken(process.env.DISCORD_BOT_TOKEN || '');
+    (async () => {
+      try {
+        client.guilds.cache.forEach(async (guild) => {
+          await rest.put(
+            //@ts-ignore
+            Routes.applicationGuildCommands(CLIENT_ID, guild.id),
+            {
+              body: commands,
+            },
+          );
+          console.log(
+            `Successfully registered application commands for ${guild.name}`,
+          );
+        });
+      } catch (error) {
+        if (error) console.error(error);
+      }
+    })();
+  });
+
+  client.on('messageCreate', async (message) => {
+    if (
+      message.content.match(
+        /(?=https:\/\/)(?=.*cookbook.gg)(?=.*\/posts)\S*/g,
+      ) &&
+      message.author !== client.user
+    ) {
+      const postId = message.content.match(/(?<=\/posts\/)(\S*)/g);
+      try {
+        const post = await PostModel.findById(postId).populate(
+          'cre_account tags cookbook character',
+        );
+        if (!post) return;
+
+        message.delete();
+        message.channel.send({
+          embeds: [postEmbed(post)],
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
-  }
-});
 
-// Login to Discord with your client's token
-client.login(process.env.DISCORD_BOT_TOKEN);
+    if (
+      message.content.match(
+        /(?=https:\/\/)(?=.*cookbook.gg)(?=.*\/section)\S*/g,
+      ) &&
+      message.author !== client.user
+    ) {
+      const guideId = message.content.match(/(?<=\/recipes\/)(\S[^\/]*)/g)?.[0];
+      const sectionName = message.content.match(/(?<=\/section\/)(\S*)/g)?.[0];
+      try {
+        const guide = await GuideModel.findById(guideId).populate(
+          'tags cookbook character',
+        );
+        if (!guide || !guide.sections || !sectionName) return;
+
+        const section = guide.sections.find(
+          (section) => `${section.title}` === decodeURIComponent(sectionName),
+        );
+
+        message.delete();
+        message.channel.send({
+          embeds: [guideEmbed(guide, section)],
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  });
+
+  client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) return;
+    const command = client.commands.get(interaction.commandName);
+    if (!command) return;
+    try {
+      await command.execute(interaction);
+    } catch (error) {
+      if (error) console.error(error);
+      await interaction.reply({
+        content: 'There was an error while executing this command!',
+        ephemeral: true,
+      });
+    }
+  });
+
+  // Login to Discord with your client's token
+  client.login(process.env.DISCORD_BOT_TOKEN);
+}
+
+initBot();

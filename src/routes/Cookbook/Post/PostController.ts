@@ -1,6 +1,7 @@
 import { Client, Intents } from 'discord.js';
 import createError from 'http-errors';
 import BaseController from '../../../base/BaseController';
+import { GuildModel } from '../../../models/Guild/guild.model';
 import { LikeModel } from '../../../models/Like/like.model';
 import { PostModel } from '../../../models/Post/post.model';
 import { postEmbed } from '../../../utils/utils';
@@ -83,15 +84,26 @@ class PostController extends BaseController {
       post = await post.populate(this.populateFields).execPopulate();
     }
 
-    client.once('ready', () => {
+    client.once('ready', async () => {
       try {
         if (!post) return;
-
-        const channels = client.channels.cache;
-        channels.forEach((channel: any) => {
-          if (channel.name === 'cookbook') {
-            channel.send({
-              embeds: [postEmbed(post)],
+        const guilds = await GuildModel.find();
+        client.guilds.cache.forEach(async (guild) => {
+          const _guild = guilds.find((g) => g.guild === guild.id);
+          if (
+            !_guild ||
+            _guild.cookbook === null ||
+            _guild.cookbook.toString() === post.cookbook._id.toString()
+          ) {
+            guild.channels.cache.forEach((channel) => {
+              if (
+                channel.name === 'cookbook' &&
+                (channel.type === 'GUILD_TEXT' || channel.type === 'GUILD_NEWS')
+              ) {
+                channel.send({
+                  embeds: [postEmbed(post)],
+                });
+              }
             });
           }
         });

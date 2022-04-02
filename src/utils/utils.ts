@@ -234,6 +234,7 @@ export const updateUsers = async () => {
 };
 
 export const gfyTransform = (url) => {
+  if (!url) return { gif: null };
   const urlObject = { thumbnail: url, giant: url, gif: url };
   const [thumb, size, mobile, mp4, giant] = [
     'thumbs.',
@@ -270,7 +271,9 @@ export const gfyTransform = (url) => {
 
 export const parseBody = (string) => {
   const matches = string.match(/(gif:)\S*/g);
-  const { gif } = gfyTransform(matches[0].split(',')[0].replace(/(gif:)/, ''));
+  const { gif } = gfyTransform(
+    matches?.[0].split(',')?.[0].replace(/(gif:)/, ''),
+  );
   return {
     gifs: gif,
     body: string.replace(/(gif:)|(vid:)|(loop:)|(tweet:)/g, ''),
