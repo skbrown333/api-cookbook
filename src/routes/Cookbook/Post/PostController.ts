@@ -1,10 +1,9 @@
 import { Client, Intents } from 'discord.js';
 import createError from 'http-errors';
 import BaseController from '../../../base/BaseController';
-import { GuildModel } from '../../../models/Guild/guild.model';
 import { LikeModel } from '../../../models/Like/like.model';
 import { PostModel } from '../../../models/Post/post.model';
-import { postEmbed } from '../../../utils/utils';
+import { parseGfy, updateFollowers } from '../../../utils/utils';
 
 class PostController extends BaseController {
   constructor() {
@@ -85,31 +84,8 @@ class PostController extends BaseController {
     }
 
     client.once('ready', async () => {
-      try {
-        if (!post) return;
-        const guilds = await GuildModel.find();
-        client.guilds.cache.forEach(async (guild) => {
-          const _guild = guilds.find((g) => g.guild === guild.id);
-          if (
-            !_guild ||
-            _guild.cookbook === null ||
-            _guild.cookbook.toString() === post.cookbook._id.toString()
-          ) {
-            guild.channels.cache.forEach((channel) => {
-              if (
-                channel.name === 'cookbook' &&
-                (channel.type === 'GUILD_TEXT' || channel.type === 'GUILD_NEWS')
-              ) {
-                channel.send({
-                  embeds: [postEmbed(post)],
-                });
-              }
-            });
-          }
-        });
-      } catch (e) {
-        console.log(e);
-      }
+      post.body = await parseGfy(post.body);
+      await updateFollowers(client, post);
     });
 
     // Login to Discord with your client's token

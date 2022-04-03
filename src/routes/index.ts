@@ -4,6 +4,7 @@ import {
   handleError,
   login,
   loginWithCookie,
+  replaceGfy,
   wrapAsync,
 } from '../utils/utils';
 
@@ -21,6 +22,7 @@ router.use('/users', UserRouter);
 router.post('/login', wrapAsync(login));
 router.get('/session', wrapAsync(getSessionCookie));
 router.get('/loginWithCookie', wrapAsync(loginWithCookie));
+router.post('/gfycat', wrapAsync(replaceGfy));
 
 router.use(handleError);
 

@@ -7,6 +7,8 @@ import { CookbookModel } from '../models/Cookbook/cookbook.model';
 import { UserModel } from '../models/User/user.model';
 import axios from 'axios';
 import { MessageEmbed } from 'discord.js';
+import ogs from 'open-graph-scraper';
+import { GuildModel } from '../models/Guild/guild.model';
 
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -317,4 +319,65 @@ export const guideEmbed = (guide: any, section: any) => {
     })
     .setDescription(body.substr(0, 1000) + '\u2026')
     .setImage(gifs);
+};
+
+export const updateFollowers = async (client, post) => {
+  try {
+    if (!post) return;
+    const guilds = await GuildModel.find();
+    client.guilds.cache.forEach(async (guild) => {
+      const _guild = guilds.find((g) => g.guild === guild.id);
+      if (
+        !_guild ||
+        _guild.cookbook === null ||
+        _guild.cookbook.toString() === post.cookbook._id.toString()
+      ) {
+        guild.channels.cache.forEach((channel) => {
+          if (
+            channel.name === 'cookbook' &&
+            (channel.type === 'GUILD_TEXT' || channel.type === 'GUILD_NEWS')
+          ) {
+            channel.send({
+              embeds: [postEmbed(post)],
+            });
+          }
+        });
+      }
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const parseGfy = async (url) => {
+  async function replaceAsync(str, regex, asyncFn) {
+    const promises: any = [];
+    str.replace(regex, (match, ...args) => {
+      const promise: any = asyncFn(match, ...args);
+      promises.push(promise);
+    });
+    const data = await Promise.all(promises);
+    return str.replace(regex, () => data.shift());
+  }
+
+  async function getUrl(match) {
+    const data: any = await scrapeGfy(match);
+    return `${data.ogVideo ? data.ogVideo.url : data.ogGif.url}`;
+  }
+
+  async function scrapeGfy(url) {
+    return new Promise((resolve, reject) => {
+      ogs({ url }, (error, results, response) => {
+        resolve(results);
+      });
+    });
+  }
+
+  return await replaceAsync(url, /(https:\/\/)(gfycat)[^\s\,]*/g, getUrl);
+};
+
+export const replaceGfy = async (req, res, response) => {
+  const url = await parseGfy(req.body.url);
+
+  res.send(url);
 };
