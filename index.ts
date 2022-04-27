@@ -214,7 +214,10 @@ async function initBot() {
       message.guildId === COOKBOOK_DISCORD_ID &&
       message.author.id === CHEF_ID
     ) {
-      if (message.content.includes('gfy')) {
+      if (
+        message.content.includes('gfycat.com') ||
+        message.content.includes('giphy.com')
+      ) {
         const _channel = client.channels.cache.find(
           (channel) => channel.id === message.channel.id,
         );
@@ -268,7 +271,10 @@ async function initBot() {
       message.guildId === FOX_COOKBOOK_DISCORD_ID &&
       FOX_CHEF_IDS.includes(message.author.id)
     ) {
-      if (message.content.includes('gfy')) {
+      if (
+        message.content.includes('gfycat.com') ||
+        message.content.includes('giphy.com')
+      ) {
         const _channel = client.channels.cache.find(
           (channel) => channel.id === message.channel.id,
         );
