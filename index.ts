@@ -31,20 +31,11 @@ import { CookbookModel } from './src/models/Cookbook/cookbook.model';
 import { PostCommand } from './src/commands/posts';
 import { UserModel } from './src/models/User/user.model';
 import { TagModel } from './src/models/Tag/tag.model';
-
-const COOKBOOK_ID = '60ae98dd749bb3001580a0b6';
-const FOX_COOKBOOK_ID = '60f48566a9fa0602242693f5';
-const FOX_COOKBOOK_DISCORD_ID = '968657356911173713';
-const COOKBOOK_DISCORD_ID = '729819302726729809';
-const CHEF_ID = '148672183961518080';
-const FOX_CHEF_IDS = [
-  '148672183961518080', // CHEF
-  '153694306719367169', // PALADIN
-  '263079437438943232', // ZUPPY
-  '95449526055215104', // SORA
-  '119339339955175424', // YONY
-  '134194821756747776',
-];
+import {
+  embedGuide,
+  embedPost,
+  postFromDiscord,
+} from './src/commands/messageCreate';
 
 mongoose.connect(ENV.db_url);
 
@@ -134,8 +125,6 @@ async function initBot() {
   await initCommands();
 
   client.once('ready', () => {
-    console.log('Ready?');
-
     const CLIENT_ID = client.user.id || '';
     const rest = new REST({
       version: '9',
@@ -161,168 +150,9 @@ async function initBot() {
   });
 
   client.on('messageCreate', async (message) => {
-    if (
-      message.content.match(
-        /(?=https:\/\/)(?=.*cookbook.gg)(?=.*\/posts)\S*/g,
-      ) &&
-      message.author !== client.user
-    ) {
-      const postId = message.content.match(/(?<=\/posts\/)(\S*)/g);
-      try {
-        const post = await PostModel.findById(postId).populate(
-          'cre_account tags cookbook character',
-        );
-        if (!post) return;
-
-        message.delete();
-        message.channel.send({
-          embeds: [postEmbed(post)],
-        });
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
-    if (
-      message.content.match(
-        /(?=https:\/\/)(?=.*cookbook.gg)(?=.*\/section)\S*/g,
-      ) &&
-      message.author !== client.user
-    ) {
-      const guideId = message.content.match(/(?<=\/recipes\/)(\S[^\/]*)/g)?.[0];
-      const sectionName = message.content.match(/(?<=\/section\/)(\S*)/g)?.[0];
-      try {
-        const guide = await GuideModel.findById(guideId).populate(
-          'tags cookbook character',
-        );
-        if (!guide || !guide.sections || !sectionName) return;
-
-        const section = guide.sections.find(
-          (section) => `${section.title}` === decodeURIComponent(sectionName),
-        );
-
-        message.delete();
-        message.channel.send({
-          embeds: [guideEmbed(guide, section)],
-        });
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
-    if (
-      message.guildId === COOKBOOK_DISCORD_ID &&
-      message.author.id === CHEF_ID
-    ) {
-      if (
-        message.content.includes('gfycat.com') ||
-        message.content.includes('giphy.com')
-      ) {
-        const _channel = client.channels.cache.find(
-          (channel) => channel.id === message.channel.id,
-        );
-        const _category = client.channels.cache.find(
-          (channel) => channel.id === message.channel.parentId,
-        );
-        let channelTag = await TagModel.findOne({
-          label: _channel.name,
-          //@ts-ignore
-          cookbook: COOKBOOK_ID,
-        });
-        if (!channelTag) {
-          channelTag = await TagModel.create({
-            cookbook: COOKBOOK_ID,
-            label: _channel.name,
-          });
-        }
-
-        let categoryTag = await TagModel.findOne({
-          label: _category.name,
-          //@ts-ignore
-          cookbook: COOKBOOK_ID,
-        });
-        if (!categoryTag) {
-          categoryTag = await TagModel.create({
-            cookbook: COOKBOOK_ID,
-            label: _category.name,
-          });
-        }
-        const user = await UserModel.findOne({ discord_id: message.author.id });
-        let post: any = await PostModel.create({
-          title: _category.name,
-          cre_account: user?._id,
-          body: message.content.replace(
-            /(https:\/\/)(gfycat)[^\s\,]*/g,
-            (match) => `gif:${match}`,
-          ),
-          tags: [categoryTag._id, channelTag._id],
-          cookbook: COOKBOOK_ID,
-        });
-
-        post = await post
-          .populate('cre_account tags cookbook character')
-          .execPopulate();
-        post.body = await parseGfy(post.body);
-        await updateFollowers(client, post);
-      }
-    }
-
-    if (
-      message.guildId === FOX_COOKBOOK_DISCORD_ID &&
-      FOX_CHEF_IDS.includes(message.author.id)
-    ) {
-      if (
-        message.content.includes('gfycat.com') ||
-        message.content.includes('giphy.com')
-      ) {
-        const _channel = client.channels.cache.find(
-          (channel) => channel.id === message.channel.id,
-        );
-        const _category = client.channels.cache.find(
-          (channel) => channel.id === message.channel.parentId,
-        );
-        let channelTag = await TagModel.findOne({
-          label: _channel.name,
-          //@ts-ignore
-          cookbook: FOX_COOKBOOK_ID,
-        });
-        if (!channelTag) {
-          channelTag = await TagModel.create({
-            cookbook: FOX_COOKBOOK_ID,
-            label: _channel.name,
-          });
-        }
-
-        let categoryTag = await TagModel.findOne({
-          label: _category.name,
-          //@ts-ignore
-          cookbook: FOX_COOKBOOK_ID,
-        });
-        if (!categoryTag) {
-          categoryTag = await TagModel.create({
-            cookbook: FOX_COOKBOOK_ID,
-            label: _category.name,
-          });
-        }
-        const user = await UserModel.findOne({ discord_id: message.author.id });
-        let post: any = await PostModel.create({
-          title: _category.name,
-          cre_account: user?._id,
-          body: message.content.replace(
-            /(https:\/\/)(gfycat)[^\s\,]*/g,
-            (match) => `gif:${match}`,
-          ),
-          tags: [categoryTag._id, channelTag._id],
-          cookbook: FOX_COOKBOOK_ID,
-        });
-
-        post = await post
-          .populate('cre_account tags cookbook character')
-          .execPopulate();
-        post.body = await parseGfy(post.body);
-        await updateFollowers(client, post);
-      }
-    }
+    await embedPost(client, message);
+    await embedGuide(client, message);
+    await postFromDiscord(client, message);
   });
 
   client.on('interactionCreate', async (interaction) => {

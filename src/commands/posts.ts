@@ -18,10 +18,10 @@ export const PostCommand = {
     }),
   async execute(interaction) {
     try {
-      let tags = interaction.options.getString('tags')?.split(' ');
+      const tags = interaction.options.getString('tags')?.split(' ');
       const guildId = interaction.guild.id;
       const guilds = await GuildModel.find({ guild: guildId });
-      let guild: any = guilds[0] || null;
+      const guild: any = guilds[0] || null;
 
       let posts = await PostModel.find().populate('tags cre_account');
       posts = posts.filter((post) => {
