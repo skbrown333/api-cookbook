@@ -7,7 +7,6 @@ import { CookbookModel } from '../models/Cookbook/cookbook.model';
 import { UserModel } from '../models/User/user.model';
 import axios from 'axios';
 import { MessageEmbed } from 'discord.js';
-import ogs from 'open-graph-scraper';
 import { GuildModel } from '../models/Guild/guild.model';
 
 admin.initializeApp({
@@ -362,15 +361,28 @@ export const parseGfy = async (url) => {
 
   async function getUrl(match) {
     const data: any = await scrapeGfy(match);
-    return `${data.ogVideo ? data.ogVideo.url : data.ogGif.url}`;
+    return `${data.miniUrl ? data.miniUrl : data.gifUrl}`;
   }
 
   async function scrapeGfy(url) {
-    return new Promise((resolve, reject) => {
-      ogs({ url }, (error, results, response) => {
-        resolve(results);
+    try {
+      const token = await axios.post('https://api.gfycat.com/v1/oauth/token', {
+        client_id: process.env.GFY_ID,
+        client_secret: process.env.GFY_SECRET,
+        grant_type: 'client_credentials',
       });
-    });
+      const gfyRegex = /(?<=gfycat.com\/).*/;
+      const res = await axios.get(
+        `https://api.gfycat.com/v1/gfycats/${gfyRegex.exec(url)}`,
+        {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        },
+      );
+      const data = res.data;
+      return data.gfyItem;
+    } catch (err) {}
   }
 
   return await replaceAsync(url, /(https:\/\/)(gfycat)[^\s\,]*/g, getUrl);
