@@ -18,6 +18,9 @@ const COOKBOOK_MAP = {
     chefs: [
       '148672183961518080', // CHEF
     ],
+    ignored_channels: [
+      '1044315191053144065', // discussion
+    ],
   },
   // ----------------------------------------
   // FOX
@@ -31,10 +34,53 @@ const COOKBOOK_MAP = {
       '95449526055215104', // SORA
       '119339339955175424', // YONY
       '134194821756747776', // STEFFAN
-      '127739019877548032', // PIPSQUEAK
-      '120309378862678016', // GOOSEKHAN
-      '120025090145386497', // ZAMU
-      '178691588447404032', // ELECTROMAN
+      '127739019877548032', // Pipsqueak
+      '78866031795245056', // Binary Clone
+      '298615479055024130', // Chape
+      '975569938385371146', // Rin
+      '85886400313974784', // Clown
+    ],
+    ignored_channels: [
+      '980228000635318363', // discussion
+      '980241131424084031', // general
+    ],
+  },
+  // ----------------------------------------
+  // SHEIK
+  // ----------------------------------------
+  '1061175237124829214': {
+    cookbook: '6103fbf880e7bd37811dc225',
+    chefs: [
+      '173700631813423105', // bonfire
+      '302145342428807169', // broccoliraab
+      '148672183961518080', // chef
+      '238000628574584834', // essy
+      '339275017684779008', // freehops
+      '207961724052045824', // heartstrings
+      '346763336110571521', // jmook
+      '314782656011436032', // juicebox
+      '486971154091868183', // kogs
+      '281899082581278720', // kyle
+      '216817215574507520', // seven
+      '172560647790264321', // muchoman
+      '223396766920212481', // max
+      '60806429077934080', // pwof
+      '86467385732653056', // quadae
+      '122642493480239104', // spark
+      '186828140323012608', // zafraud
+      '107618217928712192', // akir
+      '298598980890394624', // ben
+      '279141643024728067', // drlobster
+      '354076269870317568', // jsalt
+      '236880608868040704', // pace
+      '273247519637635073', // pope sean paul
+      '164941426293997569', // stockholm
+      '598319196417425464', // tiles_sp
+    ],
+    ignored_channels: [
+      '1061176066221289533', // discussion
+      '1061175237573611532', // general
+      '1061216808755019826', // chef discussion
     ],
   },
 };
@@ -93,7 +139,8 @@ export const embedGuide = async (client, message) => {
 export const postFromDiscord = async (client, message) => {
   if (
     COOKBOOK_MAP[message.guildId] &&
-    COOKBOOK_MAP[message.guildId].chefs.includes(message.author.id)
+    COOKBOOK_MAP[message.guildId].chefs.includes(message.author.id) &&
+    !COOKBOOK_MAP[message.guildId].ignored_channels.includes(message.channel.id)
   ) {
     if (
       message.content.includes('gfycat.com') ||
