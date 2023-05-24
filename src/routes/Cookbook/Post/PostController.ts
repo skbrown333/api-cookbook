@@ -30,7 +30,7 @@ class PostController extends BaseController {
     }
 
     const { userId } = body;
-    let users = await LikeModel.find({ user: userId, post: modelId });
+    const users = await LikeModel.find({ user: userId, post: modelId });
     const user = users[0];
 
     if (user) {
