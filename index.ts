@@ -58,7 +58,7 @@ app.listen(port, () => {
 
 app.use(helmet());
 const allowedOrigins = [
-  'dev-coobook.com',
+  'dev-cookbook.com',
   'cookbook-gg.vercel.app',
   ...(process.env.CORS ? [process.env.CORS] : []),
 ];
