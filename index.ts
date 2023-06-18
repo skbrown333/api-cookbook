@@ -65,6 +65,11 @@ const allowedOrigins = [
 const corsOptions = {
   credentials: true,
   origin: function (origin, callback) {
+    console.log(
+      '🚀 ~ file: index.ts:82 ~ corsOptions.origin:',
+      corsOptions.origin,
+    );
+
     if (!origin) {
       return callback(createError(500, 'Blocked by CORS'));
     }
